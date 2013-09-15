@@ -15,44 +15,30 @@
     <![endif]-->
   </head>
   <body>
-    <h1>Home in progress with bootstrap </h1>
+    <h1>Projects in progress with bootstrap </h1>
 
-    <h1>user: {{ user.username }} </h1>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
 
 
-<form  method='POST' id= "form1" action='/home/'  enctype="multipart/form-data">
+<form  method='GET' id= "form1" action='/projects/'  enctype="multipart/form-data">
 		<h1>New Task</h1>
 	
 		<tr>
-		<td>Task name :<input type="text" name="taskname" value=""></td>
-		<td>Task Description :<textarea name="taskdescription" ></textarea></td>
-		<td>Project <select name="projectname" onChange="combo(this, 'theinput')"></td>
-		{% for o in projects %}
-    		<option>{{o}}</option>	
-    		</tr>
-		{% endfor %}
-		</select> 
-		<p><input type='submit' value='Create Task'/></p>
+    <td>Project name :<input type="text" name="projectname" value=""></td>
+		<td>Price Per Hour :<input type="number" name="projectcost" value=""></td>
+		<p><input type='submit' value='Create Project'/></p>
 
 	{% csrf_token %}
 
 </form>
 
-<form  method='post' id= "form2" action='/projects/' enctype="multipart/form-data">
-			
-	<p><input type='submit' value='Projects'/></p>
-	{% csrf_token %}
+<form  method='GET' id= "form1" action='/home/'  enctype="multipart/form-data">
+      <p><input type='submit' value='Task'/></p>
 
-</form>
-
-<form  method='get' id= "form3" action='/yourtasks/' enctype="multipart/form-data">
-			
-	<p><input type='submit' value='yourtasks'/></p>
-	{% csrf_token %}
+  {% csrf_token %}
 
 </form>
 

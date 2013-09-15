@@ -1,0 +1,53 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bootstrap 101 Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="static/css/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  <style type="text/css">
+ #navegador {
+    margin: 0em auto;
+    list-style: none;
+    border: dotted #005692 10px;
+    border-left: 10px solid #005692;
+    border-right: 10px solid #005692;
+} 
+
+  </style>
+
+
+  </head>
+  <body>
+    <h1>your trasks in progress with bootstrap </h1>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+
+<ul id=navegador >
+    {% for current in tasks %}
+        <li type="circle">{{current}} {{current.project}} </li>
+    {% endfor %}
+
+</ul>
+
+<form  method='GET' id= "form1" action='/home/'  enctype="multipart/form-data">
+      <p><input type='submit' value='Task'/></p>
+
+  {% csrf_token %}
+
+</form>
+
+  </body>
+  </html>
