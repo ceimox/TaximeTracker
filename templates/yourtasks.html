@@ -90,12 +90,14 @@
       value='Stop'
   {% else %}
       value='Start'
+        {% for current2 in tasks %}
+          {% if current2.started %}disabled{% endif %}
+        {% endfor %} 
   {% endif %}
 
     /></td>  
  </tr> 
  </table>
- <p><input type="submit" class="btn btn-success btn-lg"value="Save" name="task_selected"></p>
 
    <input type="hidden" value="form2" name="form_selected">
  </form>  
