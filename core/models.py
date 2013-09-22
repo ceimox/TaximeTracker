@@ -67,20 +67,24 @@ class Task(models.Model):
     description = models.TextField(max_length=200,null=True)
     user = models.ForeignKey(UserProfile)
     project = models.ForeignKey(Project,null=True)
+    started = models.BooleanField()
+   # current_timer=models.ForeignKey(Timer)
  
     def __unicode__(self):
         return u'%s %s' % (self.name,self.description)
 
     def start(self):
-        self.timer = Timer()
-        self.timer.task = self
-        self.timer.initial_time=datetime.datetime.now()
-        self.timer.save()
+        self.current_timer = Timer(task=self)
+        self.current_timer.initial_time=datetime.datetime.now()
+        self.current_timer.save()
+        self.save()
     
     def stop(self):
-
-        self.timer.final_time=datetime.datetime.now()
-        self.timer.save()
+        self.current_timer = Timer.objects.get(task=self, final_time=None)
+        self.current_timer.final_time=datetime.datetime.now()
+        self.current_timer.save()
+        self.current_timer= None
+        self.save()
     
     def calculate_time(self) :
         timers=self.timer_set.all()
@@ -89,11 +93,11 @@ class Task(models.Model):
             print current.total_time
             total = current.total_time + total
         print "the total is :", total
-        return total
+        return float(total)/float(3600)
 
 
     def calculate_cost(self):
-        hours = float(self.calculate_time())/float(3600)
+        hours = self.calculate_time()
         print hours
         print self.project.price_per_hour
         print int(hours*int(self.project.price_per_hour))
@@ -110,8 +114,4 @@ class Timer(models.Model):
     def total_time(self):
         timedelta = self.final_time-self.initial_time
         return timedelta.seconds
-
-    
-    def __unicode__(self):
-        return u'%s : %ss' % (self.task,self.total_time)
 

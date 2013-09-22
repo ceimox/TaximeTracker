@@ -6,45 +6,103 @@
     <title>Bootstrap 101 Template</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    <link href="static/css/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="../../assets/js/html5shiv.js"></script>
       <script src="../../assets/js/respond.min.js"></script>
     <![endif]-->
-  <style type="text/css">
- #navegador {
-    margin: 0em auto;
-    list-style: none;
-    border: dotted #005692 10px;
-    border-left: 10px solid #005692;
-    border-right: 10px solid #005692;
-} 
-
-  </style>
 
 
   </head>
   <body>
-    <h1>your trasks in progress with bootstrap </h1>
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="//code.jquery.com/jquery.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
+    <h1><strong>Your Tasks </strong></h1>
 
 
-<ul id=navegador >
+<table class="table" >
+<tr>
+ <th>Name</th>
+ <th>Description</th> 
+ <th>Project</th>
+ <th>Timer(Hours)</th>
+ <th>Cost($)</th>
+ <th>Action</th>
+</tr>
+
     {% for current in tasks %}
-        <li type="circle">{{current}} {{current.project}} </li>
-    {% endfor %}
+<form  method='POST' action='/yourtasks/'  enctype="multipart/form-data">
+  {% csrf_token %}
 
-</ul>
+ <tr>
+    <td>{{current.name}}</td> 
+    <td>{{current.description}}</td>
+    <td>{{current.project}}</td>
+    <td>{{current.calculate_time}}</td>
+    <td>{{current.calculate_cost}}</td>
+    <td><input name="choisebuttom"type='submit' class="btn btn-sm btn-primary" 
+    {% if current.started %}value='Stop'
+    {% else %}value='Start' 
+      {% endif %}
+
+    {%if last_task%}disabled
+      {% else %} 
+        {% for current2 in tasks %}
+        {% if current2.started and current2 != current %}disabled{% endif %}
+        {% endfor %} 
+    {% endif %}  
+  
+    /></td>
+
+ </tr> 
+ <input type="hidden" value="{{current.id}}" name="task_selected">
+  <input type="hidden" value="form1" name="form_selected">
+  {% csrf_token %}
+ </form>
+    {% endfor %}   
+  
+
+</table>
+ <h1><strong>Fast Task</strong></h1>
+
+<table class="table" >
+<tr>
+ <th>Name</th>
+ <th>Description</th> 
+ <th>Project</th>
+ <th>Action</th>
+</tr>
+
+<form  method='POST' action='/yourtasks/'  enctype="multipart/form-data">
+  {% csrf_token %}
+
+ <tr>
+    <td><input name="taskName"type="text" class="form-control"  {% if not last_task %}disabled {% endif %}></td> 
+    <td><input name="taskDescription"type="text" class="form-control" {% if not last_task %}disabled {% endif %}></td>
+    <td> <select class="form-control"name="projectName" id="inputProject"{% if not last_task %} disabled {% endif %}>
+    {% for o in projects %}
+        <option>{{o}}</option>  
+    {% endfor %}
+    </select> </td>
+    <td><input name="choisebuttom"type='submit' class="btn btn-sm btn-primary" 
+
+  {% if last_task %}
+      value='Stop'
+  {% else %}
+      value='Start'
+  {% endif %}
+
+    /></td>  
+ </tr> 
+ </table>
+ <p><input type="submit" class="btn btn-success btn-lg"value="Save" name="task_selected"></p>
+
+   <input type="hidden" value="form2" name="form_selected">
+ </form>  
+  
 
 <form  method='GET' id= "form1" action='/home/'  enctype="multipart/form-data">
-      <p><input type='submit' value='Task'/></p>
-
+      <p><input class="btn btn-default btn-lg"type='submit' value='Home'/></p>
   {% csrf_token %}
 
 </form>

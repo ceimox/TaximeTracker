@@ -6,54 +6,68 @@
     <title>Bootstrap 101 Template</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    <link href="static/css/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="../../assets/js/html5shiv.js"></script>
-      <script src="../../assets/js/respond.min.js"></script>
-    <![endif]-->
+
   </head>
   <body>
-    <h1>Home in progress with bootstrap </h1>
 
-    <h1>user: {{ user.username }} </h1>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins)
     <script src="//code.jquery.com/jquery.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
+   	Include all compiled plugins (below), or include individual files as needed 
+    <script src="js/bootstrap.min.js"></script> -->
+  <div class="jumbotron">  
+   <div class="container">
+     <h1><strong>Taxime Tacker</strong></h1>
+     <h2>User:<small>{{ user }}</small></h2>
+      <table>
+      <tr>
+         <form  method='get'  action='/projects/' enctype="multipart/form-data">
+         <input type='submit'class="btn btn-success btn-lg" value='Projects'/>
+         {% csrf_token %}
+         </form>
 
+        <form  method='get' action='/yourtasks/' enctype="multipart/form-data">
+        <input class='btn btn-success btn-lg' type='submit' value='yourtasks'/>
+        {% csrf_token %}
+        </form>
+       </tr> 
+         </table>
+     
+   </div> 
+  </div>
+<h2><strong>New Task</strong></h2>
+  
+<form  role="form" method='POST' action='/home/' enctype="multipart/form-data">
+		
+	 <div class="form-group">
+    <label for="inputName"class="col-lg-2 control-label">Task Name:</label>
+    <div class="col-lg-10">
+    <input name="taskname" type="text" class="form-control" id="inputName" placeholder="Task Description">
+    
+  </div>
 
-<form  method='POST' id= "form1" action='/home/'  enctype="multipart/form-data">
-		<h1>New Task</h1>
-	
-		<tr>
-		<td>Task name :<input type="text" name="taskname" value=""></td>
-		<td>Task Description :<textarea name="taskdescription" ></textarea></td>
-		<td>Project <select name="projectname" onChange="combo(this, 'theinput')"></td>
-		{% for o in projects %}
-    		<option>{{o}}</option>	
-    		</tr>
-		{% endfor %}
-		</select> 
-		<p><input type='submit' value='Create Task'/></p>
+   <div class="form-group">
+    <label for="inputDescription"class="col-lg-2 control-label">Task Description:</label>
+    <div class="col-lg-10">
+    <textarea name="taskdescription" type="text" class="form-control" id="inputDescription" placeholder="Task Description"></textarea>
+    </div>
+  </div>
+		
+   <div class="form-group">
+    <label for="inputProject"class="col-lg-2 control-label">Project:</label>
+    <div class="col-lg-10">
+    <select class="form-control"name="projectname" id="inputProject">
+    {% for o in projects %}
+        <option>{{o}}</option>  
+    {% endfor %}
+    </select> 
+    </div>
+  </div>
 
+	<input type='submit' class="btn btn-lg btn-primary" value='Create Task'/>
 	{% csrf_token %}
-
-</form>
-
-<form  method='post' id= "form2" action='/projects/' enctype="multipart/form-data">
-			
-	<p><input type='submit' value='Projects'/></p>
-	{% csrf_token %}
-
-</form>
-
-<form  method='get' id= "form3" action='/yourtasks/' enctype="multipart/form-data">
-			
-	<p><input type='submit' value='yourtasks'/></p>
-	{% csrf_token %}
-
 </form>
 
   </body>

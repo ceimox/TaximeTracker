@@ -38,8 +38,8 @@ def home(request):
     return render(request, 'home.html',{'projects':pr})  
 
 def projects(request):
-    if request.method == 'GET':
-        alldata=request.GET
+    if request.method == 'POST':
+        alldata=request.POST
         projectname = alldata.get("projectname")
         projectcost = alldata.get("projectcost")
         p=Project(name=projectname,price_per_hour=projectcost)
@@ -48,5 +48,43 @@ def projects(request):
 
 def yourtasks(request):
     c=UserProfile.objects.all()[0]
+    p=Project.objects.all()[0]
+    pr=Project.objects.all()
+    last_task=None
+    if request.method == 'POST':
+        alldata=request.POST
+        form=alldata.get("form_selected")
+        if form =='form1':
+            select_task= alldata.get("task_selected")
+            action = alldata.get("choisebuttom")
+            t = Task.objects.get(id=select_task)
+            print t.name
+            if action == "Start":
+                t.started=True
+                t.start()
+            if action == "Stop":
+                t.started=False
+                t.stop()
+            t.save()
+        if form =='form2':
+            action = alldata.get("choisebuttom")
+            if action == "Start":
+                tk=Task(user=c,name="in_progress")
+                tk.save()
+                tk.started=True
+                tk.project=p
+                tk.start()
+                tk.save()
+                last_task=tk
+
+            if action == "Stop":
+                tk=Task.objects.get(name="in_progress")
+                tk.started = False
+                tk.stop()
+                tk.name = alldata.get("taskName")
+                projectname= alldata.get("projectName")
+                tk.project=Project.objects.get(name=projectname) 
+                tk.save()
+
     tasks=c.task_set.all()
-    return render(request, 'yourtasks.html',{'tasks':tasks}) 
+    return render(request, 'yourtasks.html',{'tasks':tasks,'last_task':last_task,'projects':pr}) 
