@@ -94,6 +94,7 @@ def yourtasks(request):
                 elif (request.POST["newProjectName"] == "" and request.POST["pricePerHour"]) or (request.POST["newProjectName"] and request.POST["pricePerHour"]== ""):
                     msg="dejo un campo vacio"
                     tk.started = True
+                    last_task = tk
                     tk.save()
                 elif request.POST["newProjectName"] =="" and request.POST["pricePerHour"] == "":
                     tk.stop()

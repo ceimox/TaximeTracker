@@ -86,10 +86,10 @@
         <option>{{o}}</option>  
     {% endfor %}
     </select> </td>
-    <td><input name="newProjectName"type="text" class="form-control"  {% if not last_task %}disabled {% endif %}></td>
+    <td><input name="newProjectName" type="text" class="form-control"  {% if not last_task %}disabled {% endif %}></td>
     <td><input name="pricePerHour"type="number" class="form-control"  {% if not last_task %}disabled {% endif %}></td>
 
-    <td><input name="choisebuttom"type='submit' class="btn btn-sm btn-primary" 
+    <td><input name="choisebuttom" type='submit' class="btn btn-sm btn-primary" 
   {% if last_task %}
       value='Stop'
   {% else %}
