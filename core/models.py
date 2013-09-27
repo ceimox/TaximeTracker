@@ -115,3 +115,4 @@ class Timer(models.Model):
         timedelta = self.final_time-self.initial_time
         return timedelta.seconds
 
+

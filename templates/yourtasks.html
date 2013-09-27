@@ -19,7 +19,7 @@
   <body>
     <h1><strong>Your Tasks </strong></h1>
 
-
+ {{ message }}
 <table class="table" >
 <tr>
  <th>Name</th>
@@ -70,6 +70,8 @@
  <th>Name</th>
  <th>Description</th> 
  <th>Project</th>
+ <th>Other project</th>
+ <th>Price per Hour</th>
  <th>Action</th>
 </tr>
 
@@ -78,14 +80,16 @@
 
  <tr>
     <td><input name="taskName"type="text" class="form-control"  {% if not last_task %}disabled {% endif %}></td> 
-    <td><input name="taskDescription"type="text" class="form-control" {% if not last_task %}disabled {% endif %}></td>
-    <td> <select class="form-control"name="projectName" id="inputProject"{% if not last_task %} disabled {% endif %}>
+    <td><input name="taskDescription" type="text" class="form-control" {% if not last_task %}disabled {% endif %}></td>
+    <td> <select class="form-control" name="projectName" id="inputProject"{% if not last_task %} disabled {% endif %}>
     {% for o in projects %}
         <option>{{o}}</option>  
     {% endfor %}
     </select> </td>
-    <td><input name="choisebuttom"type='submit' class="btn btn-sm btn-primary" 
+    <td><input name="newProjectName"type="text" class="form-control"  {% if not last_task %}disabled {% endif %}></td>
+    <td><input name="pricePerHour"type="number" class="form-control"  {% if not last_task %}disabled {% endif %}></td>
 
+    <td><input name="choisebuttom"type='submit' class="btn btn-sm btn-primary" 
   {% if last_task %}
       value='Stop'
   {% else %}

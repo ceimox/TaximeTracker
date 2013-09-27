@@ -51,6 +51,7 @@ def yourtasks(request):
     p=Project.objects.all()[0]
     pr=Project.objects.all()
     last_task=None
+    msg=""
     if request.method == 'POST':
         alldata=request.POST
         form=alldata.get("form_selected")
@@ -79,12 +80,29 @@ def yourtasks(request):
 
             if action == "Stop":
                 tk=Task.objects.get(name="in_progress")
-                tk.started = False
-                tk.stop()
-                tk.name = alldata.get("taskName")
-                projectname= alldata.get("projectName")
-                tk.project=Project.objects.get(name=projectname) 
-                tk.save()
+                if request.POST["newProjectName"] and request.POST["pricePerHour"]:
+                    tk.name = alldata.get("taskName")
+                    tk.description = alldata.get("taskDescription")
+                    projectname = alldata.get("newProjectName")
+                    project_price_per_hour = alldata.get("pricePerHour")
+                    np  = Project(name=projectname,price_per_hour=project_price_per_hour)
+                    np.save()
+                    tk.project= np
+                    tk.started = False
+                    tk.stop()
+                    tk.save()              
+                elif (request.POST["newProjectName"] == "" and request.POST["pricePerHour"]) or (request.POST["newProjectName"] and request.POST["pricePerHour"]== ""):
+                    msg="dejo un campo vacio"
+                    tk.started = True
+                    tk.save()
+                elif request.POST["newProjectName"] =="" and request.POST["pricePerHour"] == "":
+                    tk.stop()
+                    tk.name = alldata.get("taskName")
+                    tk.description = alldata.get("taskDescription")
+                    projectname= alldata.get("projectName")
+                    tk.project=Project.objects.get(name=projectname)
+                    tk.started = False
+                    tk.save()
 
     tasks=c.task_set.all()
-    return render(request, 'yourtasks.html',{'tasks':tasks,'last_task':last_task,'projects':pr}) 
+    return render(request, 'yourtasks.html',{'tasks':tasks,'last_task':last_task,'projects':pr,'message':msg}) 
