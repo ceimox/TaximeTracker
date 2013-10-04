@@ -46,6 +46,7 @@ def projects(request):
         p.save()
     return render(request, 'projects.html') 
 
+
 def yourtasks(request):
     c=UserProfile.objects.all()[0]
     pr=Project.objects.all()
@@ -59,16 +60,16 @@ def yourtasks(request):
             action = alldata.get("choisebuttom")
             t = Task.objects.get(id=select_task)
             print t.name
-            if action == "Start":
+            if action == "Start" and t.started == False:
                 t.started=True
                 t.start()
-            if action == "Stop":
+            if action == "Stop" and t.started == True:
                 t.started=False
                 t.stop()
             t.save()
         if form =='form2':
             action = alldata.get("choisebuttom")
-            if action == "Start":
+            if action == "Start" and t.started == False:
                 tk=Task(user=c,name="in_progress")
                 tk.save()
                 tk.started=True
@@ -76,7 +77,7 @@ def yourtasks(request):
                 tk.save()
                 last_task=tk
 
-            if action == "Stop":
+            if action == "Stop" and t.started == True:
                 tk=Task.objects.get(user=c,name="in_progress")
                 if request.POST["newProjectName"] and request.POST["pricePerHour"] and request.POST["taskName"]:
                     tk.name = alldata.get("taskName")

@@ -5,12 +5,14 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
+from core.models import UserProfile, Project, Task, Timer
+from views import home, projects, yourtasks, testview
 
 
 class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+
+    def test_al_abrir_home_retorna_200(self):
+        factory = RequestFactory()
+        request = factory.get("/projects")
+        self.assertEqual(projects(request).status_code, 200)
