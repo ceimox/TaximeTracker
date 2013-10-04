@@ -48,7 +48,6 @@ def projects(request):
 
 def yourtasks(request):
     c=UserProfile.objects.all()[0]
-    p=Project.objects.all()[0]
     pr=Project.objects.all()
     last_task=None
     msg=""
@@ -73,14 +72,13 @@ def yourtasks(request):
                 tk=Task(user=c,name="in_progress")
                 tk.save()
                 tk.started=True
-                tk.project=p
                 tk.start()
                 tk.save()
                 last_task=tk
 
             if action == "Stop":
-                tk=Task.objects.get(name="in_progress")
-                if request.POST["newProjectName"] and request.POST["pricePerHour"]:
+                tk=Task.objects.get(user=c,name="in_progress")
+                if request.POST["newProjectName"] and request.POST["pricePerHour"] and request.POST["taskName"]:
                     tk.name = alldata.get("taskName")
                     tk.description = alldata.get("taskDescription")
                     projectname = alldata.get("newProjectName")
@@ -91,8 +89,8 @@ def yourtasks(request):
                     tk.started = False
                     tk.stop()
                     tk.save()              
-                elif (request.POST["newProjectName"] == "" and request.POST["pricePerHour"]) or (request.POST["newProjectName"] and request.POST["pricePerHour"]== ""):
-                    msg="dejo un campo vacio"
+                elif (request.POST["newProjectName"] == "" and request.POST["pricePerHour"]) or (request.POST["newProjectName"] and request.POST["pricePerHour"]== "") or request.POST["taskName"]== "":
+                    msg="You have left a empty field"
                     tk.started = True
                     last_task = tk
                     tk.save()

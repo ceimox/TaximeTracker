@@ -19,7 +19,6 @@
   <body>
     <h1><strong>Your Tasks </strong></h1>
 
- {{ message }}
 <table class="table" >
 <tr>
  <th>Name</th>
@@ -102,10 +101,10 @@
     /></td>  
  </tr> 
  </table>
-
+  <h3 align="center" style="color:red"> {{ message }} </h3>> 
    <input type="hidden" value="form2" name="form_selected">
  </form>  
-  
+
 
 <form  method='GET' id= "form1" action='/home/'  enctype="multipart/form-data">
       <p><input class="btn btn-default btn-lg"type='submit' value='Home'/></p>
