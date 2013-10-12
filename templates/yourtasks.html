@@ -44,7 +44,7 @@
     {% else %}value='Start' 
       {% endif %}
 
-    {%if last_task%}disabled
+    {%if last_task %}disabled
       {% else %} 
         {% for current2 in tasks %}
         {% if current2.started and current2 != current %}disabled{% endif %}

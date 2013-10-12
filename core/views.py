@@ -69,7 +69,7 @@ def yourtasks(request):
             t.save()
         if form =='form2':
             action = alldata.get("choisebuttom")
-            if action == "Start" and t.started == False:
+            if action == "Start":
                 tk=Task(user=c,name="in_progress")
                 tk.save()
                 tk.started=True
@@ -77,7 +77,7 @@ def yourtasks(request):
                 tk.save()
                 last_task=tk
 
-            if action == "Stop" and t.started == True:
+            if action == "Stop":
                 tk=Task.objects.get(user=c,name="in_progress")
                 if request.POST["newProjectName"] and request.POST["pricePerHour"] and request.POST["taskName"]:
                     tk.name = alldata.get("taskName")
