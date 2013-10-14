@@ -48,6 +48,7 @@ def projects(request):
 
 
 def yourtasks(request):
+    import pdb; pdb.set_trace()
     c=UserProfile.objects.all()[0]
     pr=Project.objects.all()
     last_task=None
@@ -59,7 +60,6 @@ def yourtasks(request):
             select_task= alldata.get("task_selected")
             action = alldata.get("choisebuttom")
             t = Task.objects.get(id=select_task)
-            print t.name
             if action == "Start" and t.started == False:
                 t.started=True
                 t.start()

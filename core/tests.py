@@ -33,5 +33,6 @@ class YourtaskTest(TestCase):
         request.POST["form_selected"] = "form1"
         request.POST["task_selected"] = t.id
         request.POST["choisebuttom"] = "Start"
-        yourtasks(request)
-        self.assertEqual(user.username,"si")    
+        result = yourtasks(request)
+        tasks_started = Task.objects.filter(started=True).count() 
+        self.assertEqual(tasks_started,0)
