@@ -48,7 +48,6 @@ def projects(request):
 
 
 def yourtasks(request):
-    import pdb; pdb.set_trace()
     c=UserProfile.objects.all()[0]
     pr=Project.objects.all()
     last_task=None
@@ -82,7 +81,7 @@ def yourtasks(request):
                 if request.POST["newProjectName"] and request.POST["pricePerHour"] and request.POST["taskName"]:
                     tk.name = alldata.get("taskName")
                     tk.description = alldata.get("taskDescription")
-                    projectname = alldata.get("newProjectName")
+                    projectNameme = alldata.get("newProjectName")
                     project_price_per_hour = alldata.get("pricePerHour")
                     np  = Project(name=projectname,price_per_hour=project_price_per_hour)
                     np.save()

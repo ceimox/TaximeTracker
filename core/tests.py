@@ -35,4 +35,22 @@ class YourtaskTest(TestCase):
         request.POST["choisebuttom"] = "Start"
         result = yourtasks(request)
         tasks_started = Task.objects.filter(started=True).count() 
-        self.assertEqual(tasks_started,0)
+        self.assertEqual(tasks_started,1)
+
+    def test_al_entrar_en_form1_y_detener_tarea(self):
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        p = Project(name="testProject",price_per_hour=4000)
+        p.save()
+        t = Task(name="tarea1", user=user, started=True, project=p)
+        t.save()
+        t.start()
+        t.save()
+        request.POST["form_selected"] = "form1"
+        request.POST["task_selected"] = t.id
+        request.POST["choisebuttom"] = "Stop"
+        result = yourtasks(request)
+        tasks_stopped = Task.objects.filter(started=False).count() 
+        self.assertEqual(tasks_stopped,1)
