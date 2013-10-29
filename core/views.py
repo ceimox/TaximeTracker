@@ -81,9 +81,9 @@ def yourtasks(request):
                 if request.POST["newProjectName"] and request.POST["pricePerHour"] and request.POST["taskName"]:
                     tk.name = alldata.get("taskName")
                     tk.description = alldata.get("taskDescription")
-                    projectNameme = alldata.get("newProjectName")
+                    projectName = alldata.get("newProjectName")
                     project_price_per_hour = alldata.get("pricePerHour")
-                    np  = Project(name=projectname,price_per_hour=project_price_per_hour)
+                    np  = Project(name=projectName,price_per_hour=project_price_per_hour)
                     np.save()
                     tk.project= np
                     tk.started = False

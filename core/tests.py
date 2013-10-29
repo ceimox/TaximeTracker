@@ -54,3 +54,4 @@ class YourtaskTest(TestCase):
         result = yourtasks(request)
         tasks_stopped = Task.objects.filter(started=False).count() 
         self.assertEqual(tasks_stopped,1)
+        
