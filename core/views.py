@@ -25,13 +25,11 @@ def home(request):
     c=UserProfile.objects.all()[0]    
     pr=Project.objects.all()
     if request.method == 'POST':
-        print "ES UN POSSSSSSSSSSST"
         alldata=request.POST
         taskname = alldata.get("taskname")
         taskdescription = alldata.get("taskdescription")
         projectname= alldata.get("projectname")
         p=Project.objects.get(name=projectname)
-        print p
         t=Task(name=taskname,description=taskdescription,user=c,project=p)
         t.save()
     

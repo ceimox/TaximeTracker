@@ -21,6 +21,22 @@ class ProjectTest(TestCase):
         projects_number = Project.objects.all().count()
         self.assertEqual(projects_number, 1)
 
+class HomeTest(TestCase):
+
+    def test_al_hacer_post_se_crea_una_tarea(self):
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        p=Project(name="testProject",price_per_hour=4000)
+        p.save()
+        factory = RequestFactory()
+        request = factory.post("/home")
+        request.POST["projectname"] = "testProject"
+        request.POST["taskname"] = "testTask"
+        result = home(request)
+        projects_number = Project.objects.all().count()
+        tasks_number = Task.objects.all().count()
+        self.assertEqual(projects_number+tasks_number, 2)
+
 class YourtaskTest(TestCase):
 
     def test_al_entrar_en_form1_y_iniciar_tarea(self):
@@ -55,3 +71,116 @@ class YourtaskTest(TestCase):
         tasks_stopped = Task.objects.filter(started=False).count() 
         self.assertEqual(tasks_stopped,1)
         
+    def test_al_entrar_en_form2_y_iniciar_tarea(self):
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        request.POST["form_selected"] = "form2"
+        request.POST["choisebuttom"] = "Start"
+        result = yourtasks(request)
+        tasks_started = Task.objects.filter(started=True).count() 
+        self.assertEqual(tasks_started,1)
+
+    def test_al_entrar_en_form2_y_finalizar_tarea_con_ningun_campo_vacio(self):
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        tk=Task(user=user,name="in_progress")
+        tk.save()
+        tk.started=True
+        tk.start()
+        tk.save()
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        request.POST["form_selected"] = "form2"
+        request.POST["taskName"] = "TestTask"
+        request.POST["newProjectName"] = "Project1"
+        request.POST["pricePerHour"] = 4000
+        request.POST["choisebuttom"] = "Stop"
+        result = yourtasks(request)
+        tasks_stopped = Task.objects.filter(started=False).count() 
+        projects_number = Project.objects.all().count()
+        self.assertEqual(tasks_stopped+projects_number,2)
+
+    def test_al_entrar_en_form2_y_finalizar_tarea_con_campo_de_tarea_vacio(self):
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        tk=Task(user=user,name="in_progress")
+        tk.save()
+        tk.started=True
+        tk.start()
+        tk.save()
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        request.POST["form_selected"] = "form2"
+        request.POST["taskName"] = ""
+        request.POST["newProjectName"] = "Project1"
+        request.POST["pricePerHour"] = 4000
+        request.POST["choisebuttom"] = "Stop"
+        result = yourtasks(request)
+        tasks_stopped = Task.objects.filter(started=False).count() 
+        projects_number = Project.objects.all().count()
+        self.assertEqual(tasks_stopped+projects_number,0)
+
+    def test_al_entrar_en_form2_y_finalizar_tarea_con_campo_de_nombre_de_proyecto_vacio(self):
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        tk=Task(user=user,name="in_progress")
+        tk.save()
+        tk.started=True
+        tk.start()
+        tk.save()
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        request.POST["form_selected"] = "form2"
+        request.POST["taskName"] = "TestTask"
+        request.POST["newProjectName"] = ""
+        request.POST["pricePerHour"] = 4000
+        request.POST["choisebuttom"] = "Stop"
+        result = yourtasks(request)
+        tasks_stopped = Task.objects.filter(started=False).count() 
+        projects_number = Project.objects.all().count()
+        self.assertEqual(tasks_stopped+projects_number,0)
+
+    def test_al_entrar_en_form2_y_finalizar_tarea_con_campo_de_precio_de_proyecto_vacio(self):
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        tk=Task(user=user,name="in_progress")
+        tk.save()
+        tk.started=True
+        tk.start()
+        tk.save()
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        request.POST["form_selected"] = "form2"
+        request.POST["taskName"] = "TestTask"
+        request.POST["newProjectName"] = "Project1"
+        request.POST["pricePerHour"] = None
+        request.POST["choisebuttom"] = "Stop"
+        result = yourtasks(request)
+        tasks_stopped = Task.objects.filter(started=False).count() 
+        projects_number = Project.objects.all().count()
+        self.assertEqual(tasks_stopped+projects_number,0)
+
+    def test_al_entrar_en_form2_y_finalizar_tarea_con_campo_de_nombre_de_tarea_lleno_y_con_campos_de_proyecto_vacios(self):
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        tk=Task(user=user,name="in_progress")
+        tk.save()
+        tk.started=True
+        tk.start()
+        tk.save()
+        p=Project(name="testProject",price_per_hour=4000)
+        p.save()
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        request.POST["form_selected"] = "form2"
+        request.POST["taskName"] = "TestTask"
+        request.POST["newProjectName"] = None
+        request.POST["projectName"] = "testProject"
+        request.POST["pricePerHour"] = None
+        request.POST["choisebuttom"] = "Stop"
+        result = yourtasks(request)
+        tasks_started = Task.objects.filter(started=True).count() 
+        projects_number = Project.objects.all().count()
+        self.assertEqual(tasks_started+projects_number,2)
