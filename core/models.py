@@ -98,7 +98,7 @@ class Task(models.Model):
 
     def time_formated(self):
         from datetime import timedelta
-        delta = timedelta(self.calculate_time())
+        delta = timedelta(hours=self.calculate_time())
         return "%02d:%02d" % (delta.seconds//3600, delta.seconds // 60 % 60)
 
 
