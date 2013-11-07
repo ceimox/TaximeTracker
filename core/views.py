@@ -101,5 +101,5 @@ def yourtasks(request):
                     tk.started = False
                     tk.save()
 
-    tasks=c.task_set.all()
+    tasks=c.task_set.all().order_by('project__name')
     return render(request, 'yourtasks.html',{'tasks':tasks,'last_task':last_task,'projects':pr,'message':msg}) 
