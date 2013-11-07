@@ -93,7 +93,13 @@ class Task(models.Model):
             print current.total_time
             total = current.total_time + total
         print "the total is :", total
+
         return float(total)/float(3600)
+
+    def time_formated(self):
+        from datetime import timedelta
+        delta = timedelta(self.calculate_time())
+        return "%02d:%02d" % (delta.seconds//3600, delta.seconds // 60 % 60)
 
 
     def calculate_cost(self):
