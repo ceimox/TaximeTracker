@@ -8,6 +8,7 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase, RequestFactory
 from core.models import UserProfile, Project, Task, Timer
 from views import home, projects, yourtasks
+import datetime
 
 
 class ProjectTest(TestCase):
@@ -35,7 +36,8 @@ class HomeTest(TestCase):
         result = home(request)
         projects_number = Project.objects.all().count()
         tasks_number = Task.objects.all().count()
-        self.assertEqual(projects_number+tasks_number, 2)
+        self.assertEqual(projects_number, 1)
+        self.assertEqual(tasks_number, 1)
 
 class YourtaskTest(TestCase):
 
@@ -184,3 +186,17 @@ class YourtaskTest(TestCase):
         tasks_started = Task.objects.filter(started=True).count() 
         projects_number = Project.objects.all().count()
         self.assertEqual(tasks_started+projects_number,2)
+
+class TaskTest(TestCase):
+    def test_calcular_tiempo_para_devolver_el_tiempo_total_de_todas_las_tareas(self):
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        t1=Task(name="Task1",user=user)
+        t2=Task(name="Task2",user=user)
+        t1.save()
+        t2.save()
+        t1.current_timer = Timer(task=self)
+        timedelta1 = (2013, 10, 31, 17, 55, 1, 793006)
+        timedelta2 = (2013, 10, 31, 17, 56, 1, 660723)
+        t1.current_timer.initial_time = timedelta
+        
