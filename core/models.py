@@ -104,10 +104,10 @@ class Task(models.Model):
 
     def calculate_cost(self):
         hours = self.calculate_time()
-        print hours
-        print self.project.price_per_hour
-        print int(hours*int(self.project.price_per_hour))
-        current_cost = int(hours*int(self.project.price_per_hour))
+        if self.project:
+            current_cost = int(hours*int(self.project.price_per_hour))
+        else:
+            current_cost=0
         return current_cost
 
 
