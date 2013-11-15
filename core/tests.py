@@ -188,15 +188,77 @@ class YourtaskTest(TestCase):
         self.assertEqual(tasks_started+projects_number,2)
 
 class TaskTest(TestCase):
-    def test_calcular_tiempo_para_devolver_el_tiempo_total_de_todas_las_tareas(self):
+    
+    def test_iniciar_una_tarea_para_crearle_un_cronometro_temporal_y_darle_su_tiempo_de_inicio(self):
+        from datetime import timedelta
         user= UserProfile(username="cesar",password="1234",id=1)
         user.save()
         t1=Task(name="Task1",user=user)
-        t2=Task(name="Task2",user=user)
         t1.save()
-        t2.save()
-        t1.current_timer = Timer(task=self)
-        timedelta1 = (2013, 10, 31, 17, 55, 1, 793006)
-        timedelta2 = (2013, 10, 31, 17, 56, 1, 660723)
-        t1.current_timer.initial_time = timedelta
-        
+        t1.current_timer = Timer(task=t1)
+        t1.current_timer.initial_time=datetime.datetime(2013, 10, 31, 17, 56, 1, 0)
+        t1.current_timer.save()
+        t1.save()
+        timers= t1.timer_set.all().count()
+        time=t1.current_timer
+        self.assertEqual(timers,1)
+        self.assertEqual(time.initial_time.second,1)
+
+    def test_pausar_una_tarea_para_desvicularle_el_cronometro_temporal_y_asignarle_tiempo_final(self):
+        from datetime import timedelta
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        t1=Task(name="Task1",user=user)
+        t1.save()
+        t1.current_timer = Timer(task=t1)
+        t1.current_timer.final_time=datetime.datetime(2013, 10, 31, 17, 56, 1, 0)
+        t1.current_timer.save()
+        time=t1.current_timer
+        self.assertEqual(time.final_time.second,1)
+        t1.current_timer=None
+        t1.save()
+        timer_in_task = t1.current_timer
+        self.assertEqual(timer_in_task,None)
+        timers= t1.timer_set.all().count()
+        self.assertEqual(timers,1)        
+
+    def test_calcular_tiempo_para_devolver_el_tiempo_total_de_una_tarea(self):
+        from datetime import timedelta
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        t1=Task(name="Task1",user=user)
+        t1.save()
+        t1.current_timer = Timer(task=t1)
+        t1.current_timer.save()
+        t1.current_timer.initial_time = datetime.datetime(2013, 10, 31, 17, 56, 1, 0)
+        t1.current_timer.final_time = datetime.datetime(2013, 10, 31, 18, 56, 1, 0)
+        t1.current_timer.save()
+        t1.current_timer=None
+        t1.current_timer = Timer(task=t1)
+        t1.current_timer.save()
+        t1.current_timer.initial_time = datetime.datetime(2013, 10, 31, 18, 56, 1, 0)
+        t1.current_timer.final_time = datetime.datetime(2013, 10, 31, 19, 56, 1, 0)
+        t1.current_timer.save()
+        result = t1.calculate_time()
+        self.assertEqual(result,2)
+
+    def calcular_costo_para_obtener_el_valor_total_por_una_tarea_con_todos_sus_tiempos(self):
+        user= UserProfile(username="cesar",password="1234",id=1)
+        user.save()
+        project=Project(name="test_project",price_per_hour=4000)
+        project.save()
+        t1=Task(name="Task1",user=user,project=project)
+        t1.save()
+        t1.current_timer = Timer(task=t1)
+        t1.current_timer.save()
+        t1.current_timer.initial_time = datetime.datetime(2013, 10, 31, 17, 56, 1, 0)
+        t1.current_timer.final_time = datetime.datetime(2013, 10, 31, 18, 56, 1, 0)
+        t1.current_timer.save()
+        t1.current_timer=None
+        t1.current_timer = Timer(task=t1)
+        t1.current_timer.save()
+        t1.current_timer.initial_time = datetime.datetime(2013, 10, 31, 18, 56, 1, 0)
+        t1.current_timer.final_time = datetime.datetime(2013, 10, 31, 19, 56, 1, 0)
+        t1.current_timer.save()
+        result = t1.calculate_cost()
+        self.assertEqual(result,8000)
