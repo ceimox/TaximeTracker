@@ -19,10 +19,10 @@ def showprojects(request):
     return render(request, 'show.html',{'img':'projects.png'})
 
 def showallprojects(request):
-    return render(request, 'show.html',{'img':'allprojects.png'})      
+    return render(request, 'show.html',{'img':'allprojects.png'})
 
 def home(request):
-    c=UserProfile.objects.all()[0]    
+    c=UserProfile.objects.all()[0]
     pr=Project.objects.all()
     if request.method == 'POST':
         alldata=request.POST
@@ -32,8 +32,8 @@ def home(request):
         p=Project.objects.get(name=projectname)
         t=Task(name=taskname,description=taskdescription,user=c,project=p)
         t.save()
-    
-    return render(request, 'home.html',{'projects':pr})  
+
+    return render(request, 'home.html',{'projects':pr})
 
 def projects(request):
     if request.method == 'POST':
@@ -42,7 +42,7 @@ def projects(request):
         projectcost = alldata.get("projectcost")
         p=Project(name=projectname,price_per_hour=projectcost)
         p.save()
-    return render(request, 'projects.html') 
+    return render(request, 'projects.html')
 
 def start_task(task):
     task.started = True
@@ -63,13 +63,13 @@ def first_div(task,action):
 def start_second_div(user):
     task=Task(user=user,name="in_progress",started=True)
     task.save()
-    task.start() 
+    task.start()
     return task,""
 
 def search_existing_project(name_project):
     if Project.objects.filter(name=name_project):
         return Project.objects.filter(name=name_project)[0]
-    else: 
+    else:
         np  = Project(name=name_project,price_per_hour=0)
         np.save()
         return np
@@ -82,19 +82,19 @@ def stop_second_div(user,alldata):
         task.project= search_existing_project(alldata.get("newProjectName"))
         task.started = False
         task.stop()
-        return None,""              
+        return None, ""
     else:
         msg="You have left a empty field"
         task.started = True
         task.save()
         return task,msg
-    
+
 def second_div(u,action,alldata):
     if action == "Start":
         return start_second_div(u)
     if action == "Stop":
         return stop_second_div(u,alldata)
-   
+
 def yourtasks(request):
     u=UserProfile.objects.all()[0]
     pr=Project.objects.all()
@@ -103,7 +103,7 @@ def yourtasks(request):
     if request.method == 'POST':
         alldata=request.POST
         form=alldata.get("form_selected")
-        if form =='form1':           
+        if form =='form1':
             select_task= alldata.get("task_selected")
             action = alldata.get("choisebuttom")
             task = Task.objects.get(id=select_task)
@@ -114,4 +114,4 @@ def yourtasks(request):
             last_task = tupla[0]
             msg = tupla[1]
     tasks=u.task_set.all().order_by('project__name')
-    return render(request, 'yourtasks.html',{'tasks':tasks,'last_task':last_task,'projects':pr,'message':msg}) 
+    return render(request, 'yourtasks.html',{'tasks':tasks,'last_task':last_task,'projects':pr,'message':msg})
