@@ -20,6 +20,13 @@ class Project(models.Model):
         total = sum([current.calculate_cost() for current in tasks])
         return total
 
+    def calculate_time(self):
+      total = 0
+      for t in self.task_set.all():
+        total += t.calculate_time()
+
+      return total
+
 class Task(models.Model):
     name = models.CharField(max_length=200, null=True)
     description = models.TextField(max_length=200, null=True)
