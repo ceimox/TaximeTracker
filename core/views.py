@@ -56,8 +56,7 @@ def stop_fast_task(task,alldata):
     task.name = alldata.get("taskName")
     task.description = alldata.get("taskDescription")
     task.project= search_existing_project(alldata.get("newProjectName"))
-    task.started = False
-    task.stop()
+    stop_task(task)
 
 
 def first_div(task,action):

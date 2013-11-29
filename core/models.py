@@ -9,7 +9,6 @@ class UserProfile(User):
 
     def calculate_total_cost(self) :
         tasks=self.task_set.all()
-        total=0
         total = sum([current.calculate_cost() for current in tasks])
         return total
 
