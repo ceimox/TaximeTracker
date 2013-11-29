@@ -47,12 +47,18 @@ def projects(request):
 def start_task(task):
     task.started = True
     task.start()
-    task.save()
 
 def stop_task(task):
     task.started = False
     task.stop()
-    task.save()
+
+def stop_fast_task(task,alldata):
+    task.name = alldata.get("taskName")
+    task.description = alldata.get("taskDescription")
+    task.project= search_existing_project(alldata.get("newProjectName"))
+    task.started = False
+    task.stop()
+
 
 def first_div(task,action):
     if action == "Start" and task.started == False:
@@ -77,11 +83,7 @@ def search_existing_project(name_project):
 def stop_second_div(user,alldata):
     task=Task.objects.get(user=user,name="in_progress")
     if alldata["newProjectName"] and alldata["taskName"]:
-        task.name = alldata.get("taskName")
-        task.description = alldata.get("taskDescription")
-        task.project= search_existing_project(alldata.get("newProjectName"))
-        task.started = False
-        task.stop()
+        stop_fast_task(task,alldata)
         return None, ""
     else:
         msg="You have left a empty field"
@@ -103,14 +105,10 @@ def yourtasks(request):
     if request.method == 'POST':
         alldata=request.POST
         form=alldata.get("form_selected")
-        if form =='form1':
-            select_task= alldata.get("task_selected")
-            action = alldata.get("choisebuttom")
-            task = Task.objects.get(id=select_task)
-            first_div(task,action)
+        if form =='form1':            
+            first_div(Task.objects.get(id=alldata.get("task_selected")),alldata.get("choisebuttom"))
         if form =='form2':
-            action = alldata.get("choisebuttom")
-            tupla = second_div(u,action,alldata)
+            tupla = second_div(u,alldata.get("choisebuttom"),alldata)
             last_task = tupla[0]
             msg = tupla[1]
     tasks=u.task_set.all().order_by('project__name')

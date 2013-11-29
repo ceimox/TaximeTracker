@@ -7,14 +7,11 @@ class UserProfile(User):
     def __unicode__(self):
         return  self.username
 
-
     def calculate_total_cost(self) :
         tasks=self.task_set.all()
         total=0
-        for current in tasks:
-            total = current.calculate_cost() + total
+        total = sum([current.calculate_cost() for current in tasks])
         return total
-
 
 class Project(models.Model):
     name = models.CharField(primary_key=True,max_length= 200)
@@ -25,9 +22,7 @@ class Project(models.Model):
 
     def calculate_cost(self):
         tasks=self.task_set.all()
-        total=0
-        for current in tasks:
-            total = current.calculate_cost() + total
+        total = sum([current.calculate_cost() for current in tasks])
         return total
 
 class Task(models.Model):
@@ -55,10 +50,7 @@ class Task(models.Model):
 
     def calculate_time(self) :
         timers=self.timer_set.all()
-        total=0
-        for current in timers:
-            total = current.total_time + total
-
+        total = sum([current.total_time for current in timers])
         return float(total)/float(3600)
 
     def time_formated(self):
