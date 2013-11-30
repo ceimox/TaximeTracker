@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from core.views import yourtasks, home, projects, showhome, showindex, showregistration, showalltasks, showprojects, showallprojects
+from core.views import fast_task, yourtasks, home, projects, showhome, showindex, showregistration, showalltasks, showprojects, showallprojects
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -11,6 +11,8 @@ urlpatterns = patterns('',
     url(r'^home',home),
     url(r'^projects',projects),
     url(r'^yourtasks',yourtasks),
+    
+    url(r'^fasttask',fast_task),
     url(r'^showregistration',showregistration),
     url(r'^showalltasks',showalltasks),
     url(r'^showprojects',showprojects),
