@@ -56,8 +56,7 @@ def stop_fast_task(task,alldata):
     task.name = alldata.get("taskName")
     task.description = alldata.get("taskDescription")
     task.project= search_existing_project(alldata.get("newProjectName"))
-    task.started = False
-    task.stop()
+    stop_task(task)
 
 
 def first_div(task,action):
@@ -91,25 +90,25 @@ def stop_second_div(user,alldata):
         task.save()
         return task,msg
 
-def second_div(u,action,alldata):
+def second_div(action,alldata):
     if action == "Start":
-        return start_second_div(u)
+        return start_second_div(UserProfile.objects.all()[0])
     if action == "Stop":
-        return stop_second_div(u,alldata)
+        return stop_second_div(UserProfile.objects.all()[0],alldata)
 
 def yourtasks(request):
-    u=UserProfile.objects.all()[0]
-    pr=Project.objects.all()
+    if request.method == 'POST':
+        alldata=request.POST           
+        first_div(Task.objects.get(id=alldata.get("task_selected")),alldata.get("choisebuttom"))
+    tasks=UserProfile.objects.all()[0].task_set.all().order_by('project__name')
+    return render(request, 'yourtasks.html',{'tasks':tasks,'last_task':None,'message':''})
+
+def fast_task(request):
     last_task=None
     msg=""
     if request.method == 'POST':
-        alldata=request.POST
-        form=alldata.get("form_selected")
-        if form =='form1':            
-            first_div(Task.objects.get(id=alldata.get("task_selected")),alldata.get("choisebuttom"))
-        if form =='form2':
-            tupla = second_div(u,alldata.get("choisebuttom"),alldata)
-            last_task = tupla[0]
-            msg = tupla[1]
-    tasks=u.task_set.all().order_by('project__name')
-    return render(request, 'yourtasks.html',{'tasks':tasks,'last_task':last_task,'projects':pr,'message':msg})
+        tupla = second_div(request.POST.get("choisebuttom"),request.POST)
+        last_task = tupla[0]
+        msg = tupla[1]
+    tasks=UserProfile.objects.all()[0].task_set.all().order_by('project__name')
+    return render(request, 'yourtasks.html',{'tasks':tasks,'last_task':last_task,'message':msg})
