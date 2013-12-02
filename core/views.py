@@ -65,8 +65,7 @@ def first_div(task,action):
         stop_task(task)
 
 def start_second_div(user):
-    task=Task(user=user,name="in_progress",started=True)
-    task.save()
+    task=Task.objects.create(user=user,name="in_progress",started=True)
     task.start()
     return task,""
 
@@ -74,8 +73,7 @@ def search_existing_project(name_project):
     if Project.objects.filter(name=name_project):
         return Project.objects.filter(name=name_project)[0]
     else:
-        np  = Project(name=name_project,price_per_hour=0)
-        np.save()
+        np  = Project.objects.create(name=name_project,price_per_hour=0)
         return np
 
 def stop_second_div(user,alldata):
