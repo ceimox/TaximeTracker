@@ -32,7 +32,6 @@ def home(request):
         p=Project.objects.get(name=projectname)
         t=Task(name=taskname,description=taskdescription,user=c,project=p)
         t.save()
-
     return render(request, 'home.html',{'projects':pr})
 
 def projects(request):
