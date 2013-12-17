@@ -8,27 +8,27 @@ class UserProfile(User):
         return  self.username
 
     def calculate_total_cost(self) :
-        tasks=self.task_set.all()
+        tasks = self.task_set.all()
         total = sum([current.calculate_cost() for current in tasks])
         return total
 
 class Project(models.Model):
-    name = models.CharField(primary_key=True,max_length= 200)
+    name = models.CharField(primary_key=True, max_length=200)
     price_per_hour = models.IntegerField()
 
     def __unicode__(self):
         return  self.name
 
     def calculate_cost(self):
-        tasks=self.task_set.all()
+        tasks = self.task_set.all()
         total = sum([current.calculate_cost() for current in tasks])
         return total
 
 class Task(models.Model):
-    name = models.CharField(max_length=200,null=True)
-    description = models.TextField(max_length=200,null=True)
+    name = models.CharField(max_length=200, null=True)
+    description = models.TextField(max_length=200, null=True)
     user = models.ForeignKey(UserProfile)
-    project = models.ForeignKey(Project,null=True)
+    project = models.ForeignKey(Project, null=True)
     started = models.BooleanField()
 
     def __unicode__(self):
@@ -36,7 +36,7 @@ class Task(models.Model):
 
     def start(self):
         self.current_timer = Timer(task=self)
-        self.current_timer.initial_time=datetime.datetime.now()
+        self.current_timer.initial_time = datetime.datetime.now()
         self.current_timer.save()
         self.save()
 
@@ -44,33 +44,32 @@ class Task(models.Model):
         self.current_timer = Timer.objects.get(task=self, final_time=None)
         self.current_timer.final_time=datetime.datetime.now()
         self.current_timer.save()
-        self.current_timer= None
+        self.current_timer = None
         self.save()
 
     def calculate_time(self) :
-        timers=self.timer_set.all()
+        timers = self.timer_set.all()
         total = sum([current.total_time for current in timers])
-        return float(total)/float(3600)
+        return float(total) / float(3600)
 
     def time_formated(self):
         from datetime import timedelta
-        delta = timedelta(hours=self.calculate_time())
-        return "%02d:%02d" % (delta.seconds//3600, delta.seconds // 60 % 60)
+        delta = timedelta(hours = self.calculate_time())
+        return "%02d:%02d" % (delta.seconds // 3600, delta.seconds // 60 % 60)
 
 
     def calculate_cost(self):
         hours = self.calculate_time()
         if self.project:
-            current_cost = int(hours*int(self.project.price_per_hour))
+            current_cost = int(hours * int(self.project.price_per_hour))
         else:
-            current_cost=0
+            current_cost = 0
         return current_cost
-
 
 class Timer(models.Model):
     initial_time = models.DateTimeField(null=True)
     final_time = models.DateTimeField(null=True)
-    task = models.ForeignKey(Task,null=True)
+    task = models.ForeignKey(Task, null=True)
 
     @property
     def total_time(self):
