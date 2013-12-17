@@ -13,7 +13,7 @@ class UserProfile(User):
         return total
 
 class Project(models.Model):
-    name = models.CharField(primary_key = True, max_length = 200)
+    name = models.CharField(primary_key=True, max_length=200)
     price_per_hour = models.IntegerField()
 
     def __unicode__(self):
@@ -25,23 +25,23 @@ class Project(models.Model):
         return total
 
 class Task(models.Model):
-    name = models.CharField(max_length = 200 , null = True)
-    description = models.TextField(max_length = 200, null = True)
+    name = models.CharField(max_length=200, null=True)
+    description = models.TextField(max_length=200, null=True)
     user = models.ForeignKey(UserProfile)
-    project = models.ForeignKey(Project, null = True)
+    project = models.ForeignKey(Project, null=True)
     started = models.BooleanField()
 
     def __unicode__(self):
         return u'%s %s' % (self.name,self.description)
 
     def start(self):
-        self.current_timer = Timer(task = self)
+        self.current_timer = Timer(task=self)
         self.current_timer.initial_time = datetime.datetime.now()
         self.current_timer.save()
         self.save()
 
     def stop(self):
-        self.current_timer = Timer.objects.get(task = self, final_time = None)
+        self.current_timer = Timer.objects.get(task=self, final_time=None)
         self.current_timer.final_time=datetime.datetime.now()
         self.current_timer.save()
         self.current_timer = None
@@ -67,9 +67,9 @@ class Task(models.Model):
         return current_cost
 
 class Timer(models.Model):
-    initial_time = models.DateTimeField(null = True)
-    final_time = models.DateTimeField(null = True)
-    task = models.ForeignKey(Task, null = True)
+    initial_time = models.DateTimeField(null=True)
+    final_time = models.DateTimeField(null=True)
+    task = models.ForeignKey(Task, null=True)
 
     @property
     def total_time(self):
