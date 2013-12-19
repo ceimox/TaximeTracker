@@ -75,3 +75,52 @@ class Timer(models.Model):
     def total_time(self):
         timedelta = self.final_time-self.initial_time
         return timedelta.seconds
+
+def start_task(task):
+    task.started = True
+    task.start()
+
+def stop_task(task):
+    task.started = False
+    task.stop()
+
+def stop_fast_task(task, alldata):
+    task.name = alldata.get("taskName")
+    task.description = alldata.get("taskDescription")
+    task.project = search_existing_project(alldata.get("newProjectName"))
+    stop_task(task)
+
+def first_div(task, action):
+    if action == "Start" and task.started == False:
+        start_task(task)
+    if action == "Stop" and task.started == True:
+        stop_task(task)
+
+def start_second_div(user):
+    task = Task.objects.create(user = user, name = "in_progress", started = True)
+    task.start()
+    return task, ""
+
+def search_existing_project(name_project):
+    if Project.objects.filter(name = name_project):
+        return Project.objects.filter(name = name_project)[0]
+    else:
+        np = Project.objects.create(name = name_project, price_per_hour = 0)
+        return np
+
+def stop_second_div(user, alldata):
+    task = Task.objects.get(user = user, name = "in_progress")
+    if alldata["newProjectName"] and alldata["taskName"]:
+        stop_fast_task(task, alldata)
+        return None, ""
+    else:
+        msg = "You have left a empty field"
+        task.started = True
+        task.save()
+        return task, msg
+
+def second_div(action,alldata):
+    if action == "Start":
+        return start_second_div(UserProfile.objects.all()[0])
+    if action == "Stop":
+        return stop_second_div(UserProfile.objects.all()[0], alldata)

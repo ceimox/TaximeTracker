@@ -235,7 +235,7 @@ class TaskTest(TestCase):
         self.assertEqual(result,2)
 
     def calcular_costo_para_obtener_el_valor_total_por_una_tarea_con_todos_sus_tiempos(self):
-        user= UserProfile(username="cesar",password="1234",id=1)
+        user= UserProfile(username="cesar",password="1234")
         user.save()
         project=Project(name="test_project",price_per_hour=4000)
         project.save()
