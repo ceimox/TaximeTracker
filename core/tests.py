@@ -1,5 +1,5 @@
 from django.test import TestCase, RequestFactory
-from core.models import UserProfile, Project, Task, Timer
+from core.models import Project, Task, Timer
 from views import home, projects, yourtasks
 from core.models import start_task, stop_task, stop_fast_task, first_div
 from core.models import stop_second_div, second_div, start_second_div
@@ -35,7 +35,6 @@ class StopTaskTest(TestCase):
         self.assertEqual(temporal_timer, None)
         timers = Timer.objects.all().count()
         self.assertEqual(timers,1)
-
 
 class ProjectTest(TestCase):
 

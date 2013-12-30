@@ -3,17 +3,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Bootstrap 101 Template</title>
+    <title>Your Tasks</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="../../assets/js/html5shiv.js"></script>
-      <script src="../../assets/js/respond.min.js"></script>
-    <![endif]-->
-
 
   </head>
   <body>
@@ -92,15 +85,19 @@
     /></td>  
  </tr> 
  </table>
-  <h3 align="center" style="color:red"> {{ message }} </h3>> 
+  <h3 align="center" style="color:red"> {{ message }} </h3>
  </form>  
 
-
-<form  method='GET' id= "form1" action='/home/'  enctype="multipart/form-data">
-      <p><input class="btn btn-default btn-lg"type='submit' value='Home'/></p>
+<form  method='GET' id= "form1" action='/'  enctype="multipart/form-data">
+      <p><input class="btn btn-default btn-lg"type='submit' value='Home'></p>
   {% csrf_token %}
                                         
 </form>
+<form role="form" method='GET' action='/accounts/logout' enctype="multipart/form-data">
+  <input type='submit' class="btn  btn-danger" value='Log out'>
+  {% csrf_token %}
+</form>
+
 
   </body>
   </html>
