@@ -2,15 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 
-class UserProfile(User):
 
-    def __unicode__(self):
-        return  self.username
-
-    def calculate_total_cost(self) :
-        tasks = self.task_set.all()
-        total = sum([current.calculate_cost() for current in tasks])
-        return total
+def calculate_total_cost(user) :
+    tasks = user.task_set.all()
+    total = sum([current.calculate_cost() for current in tasks])
+    return total
 
 class Project(models.Model):
     name = models.CharField(primary_key=True, max_length=200)
@@ -27,7 +23,7 @@ class Project(models.Model):
 class Task(models.Model):
     name = models.CharField(max_length=200, null=True)
     description = models.TextField(max_length=200, null=True)
-    user = models.ForeignKey(UserProfile)
+    user = models.ForeignKey(User)
     project = models.ForeignKey(Project, null=True)
     started = models.BooleanField()
 
@@ -119,8 +115,8 @@ def stop_second_div(user, alldata):
         task.save()
         return task, msg
 
-def second_div(action,alldata):
+def second_div(action, alldata, user):
     if action == "Start":
-        return start_second_div(UserProfile.objects.all()[0])
+        return start_second_div(user)
     if action == "Stop":
-        return stop_second_div(UserProfile.objects.all()[0], alldata)
+        return stop_second_div(user, alldata)

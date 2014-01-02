@@ -1,0 +1,44 @@
+{% extends "registration/base.html" %}
+
+{% block title %}Log in{% endblock %}
+
+{% block content %}
+
+<h1><strong>TaximeTracker</strong></h1>
+
+{% if form.errors %}
+<p class="error">Please correct the errors below:</p>
+{% endif %}
+
+<form method="post" action="?next={{ next|default:"/" }}">{% csrf_token %}
+<dl>
+<dt><label for="id_username">Username:</label>{% if form.username.errors %} <span class="error">{{ form.username.errors|join:", " }}</span>{% endif %}</dt>
+<dd>{{ form.username }}</dd>
+<dt><label for="id_password">Password:</label>{% if form.password.errors %} <span class="error">{{ form.password.errors|join:", " }}</span>{% endif %}</dt>
+<dd>{{ form.password }}</dd>
+<dt><input type="submit" class="btn btn-lg btn-primary" value="Log in" /></dt>
+</dl>
+</form>
+<table>
+<tr>
+    <form  method='get'  action='/accounts/register' enctype="multipart/form-data">
+     <input type='submit'class="btn btn-success " value='Create a account'>
+    {% csrf_token %}
+    </form>
+    <form  method='get' action='/accounts/password/reset' enctype="multipart/form-data">
+    <input class='btn btn-success ' type='submit' value='Reset password'>
+    {% csrf_token %}
+    </form>
+</tr> 
+</table>
+
+
+
+
+{% endblock %}
+
+{% block content-related %}
+<p>If you don't have an account, you can <a href="/accounts/register/">sign
+up</a> for one.
+{% endblock %}
+ 

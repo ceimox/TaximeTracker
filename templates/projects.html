@@ -28,18 +28,22 @@
     <input name="projectcost" type="number" class="form-control" id="inputPrice" placeholder="Price per Hour">
   </div>
   </div>
-		<p><input type='submit' class="btn btn-primary btn-lg" value='Create Project'/></p>
+		<p><input type='submit' class="btn btn-primary btn-lg" value='Create Project'></p>
 
 	{% csrf_token %}
 
 </form>
 
-<form  method='GET' id= "form1" action='/home/'  enctype="multipart/form-data">
-    <p><input class="btn btn-success btn-ms" type='submit' value='Task'/></p>
-
+<form  method='GET' id= "form1" action='/'  enctype="multipart/form-data">
+    <p><input class="btn btn-success btn-ms" type='submit' value='Home'></p>
   {% csrf_token %}
-
 </form>
+
+<form role="form" method='GET' action='/accounts/logout' enctype="multipart/form-data">
+  <input type='submit' class="btn  btn-danger" value='Log out'>
+  {% csrf_token %}
+</form>
+
 
   </body>
   </html>
