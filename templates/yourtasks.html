@@ -7,97 +7,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
-
   </head>
   <body>
     <h1><strong>Your Tasks </strong></h1>
 
-<table class="table" >
-<tr>
- <th>Project</th>
- <th>Name</th>
- <th>Description</th> 
- <th>Timer(Hours)</th>
- <th>Cost($)</th>
- <th>Action</th>
-</tr>
+    <table class="table" >
+      <tr>
+        <th>Project</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Timer(Hours)</th>
+        <th>Action</th>
+      </tr>
 
-    {% for current in tasks %}
-<form  method='POST' action='/yourtasks/'  enctype="multipart/form-data">
-  {% csrf_token %}
+      {% for current in tasks %}
+        <form  method='POST' action='/yourtasks/' enctype="multipart/form-data">
+          {% csrf_token %}
 
- <tr>
-    <td>{{current.project}}</td>
-    <td>{{current.name}}</td> 
-    <td>{{current.description}}</td>
-    <td>{{current.time_formated}}</td>
-    <td>{{current.calculate_cost}}</td>
-    <td><input name="choisebuttom"type='submit' class="btn btn-sm btn-primary" 
-    {% if current.started %}value='Stop'
-    {% else %}value='Start' 
-      {% endif %}
+         <tr>
+           <td>{{current.project}}</td>
+           <td>{{current.name}}</td>
+           <td>{{current.description}}</td>
+           <td>{{current.time_formated}}</td>
+           <td>
+             <input name="choisebuttom" type='submit' class="btn btn-sm btn-primary"
+              {% if current.started %}value='Stop'
+              {% else %}value='Start'
+              {% endif %}
 
-    {%if last_task %}disabled
-      {% else %} 
-        {% for current2 in tasks %}
-        {% if current2.started and current2 != current %}disabled{% endif %}
-        {% endfor %} 
-    {% endif %}  
-  
-    /></td>
+              {%if last_task %}disabled
+              {% else %}
+                {% for current2 in tasks %}
+                  {% if current2.started and current2 != current %}disabled{% endif %}
+                {% endfor %}
+              {% endif %}
+              />
+            </td>
 
- </tr> 
- <input type="hidden" value="{{current.id}}" name="task_selected">
-  {% csrf_token %}
- </form>
-    {% endfor %}   
-  
+          </tr>
+          <input type="hidden" value="{{current.id}}" name="task_selected">
+        </form>
+      {% endfor %}
 
-</table>
- <h1><strong>Fast Task</strong></h1>
+    </table>
+    <h1><strong>Fast Task</strong></h1>
 
-<table class="table" >
-<tr>
- <th>Name</th>
- <th>Description</th> 
- <th>Other project</th>
- <th>Action</th>
-</tr>
+    <table class="table" >
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Other project</th>
+        <th>Action</th>
+      </tr>
 
-<form  method='POST' action='/fasttask/'  enctype="multipart/form-data">
-  {% csrf_token %}
+      <form  method='POST' action='/fasttask/'  enctype="multipart/form-data">
+        {% csrf_token %}
 
- <tr>
-    <td><input name="taskName"type="text" class="form-control"  {% if not last_task %}disabled {% endif %}></td> 
-    <td><input name="taskDescription" type="text" class="form-control" {% if not last_task %}disabled {% endif %}></td>
-    <td><input name="newProjectName" type="text" class="form-control"  {% if not last_task %}disabled {% endif %}></td>
+        <tr>
+          <td><input name="taskName"type="text" class="form-control" {% if not last_task %}disabled {% endif %}></td>
+          <td><input name="taskDescription" type="text" class="form-control" {% if not last_task %}disabled {% endif %}></td>
+          <td><input name="newProjectName" type="text" class="form-control"  {% if not last_task %}disabled {% endif %}></td>
+          <td>
+            <input name="choisebuttom" type='submit' class="btn btn-sm btn-primary"
+              {% if last_task %}value='Stop'
+              {% else %}value='Start'
+                {% for current2 in tasks %}
+                  {% if current2.started %}disabled{% endif %}
+                {% endfor %}
+              {% endif %}
+          /></td>
+        </tr>
+        <h3 class="text-center text-danger" > {{ message }} </h3>
+      </form>
+    </table>
 
-    <td><input name="choisebuttom" type='submit' class="btn btn-sm btn-primary" 
-  {% if last_task %}
-      value='Stop'
-  {% else %}
-      value='Start'
-        {% for current2 in tasks %}
-          {% if current2.started %}disabled{% endif %}
-        {% endfor %} 
-  {% endif %}
-
-    /></td>  
- </tr> 
- </table>
-  <h3 class="text-center text-danger" > {{ message }} </h3>
- </form>  
-
-<form  method='GET' id= "form1" action='/'  enctype="multipart/form-data">
+    <form  method='GET' id= "form1" action='/'  enctype="multipart/form-data">
       <p><input class="btn btn-default btn-lg"type='submit' value='Home'></p>
-  {% csrf_token %}
-                                        
-</form>
-<form role="form" method='GET' action='/accounts/logout' enctype="multipart/form-data">
-  <input type='submit' class="btn  btn-danger" value='Log out'>
-  {% csrf_token %}
-</form>
-
-
+      {% csrf_token %}
+    </form>
+    <form role="form" method='GET' action='/accounts/logout' enctype="multipart/form-data">
+      <input type='submit' class="btn  btn-danger" value='Log out'>
+      {% csrf_token %}
+    </form>
   </body>
-  </html>
+</html>
