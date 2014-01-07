@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from core.lib.time_delta import TimeDelta
 import datetime
 
 
@@ -52,17 +53,16 @@ class Task(models.Model):
 
     def calculate_time(self) :
         timers = self.timer_set.all()
-        total = sum([current.total_time for current in timers])
-        return float(total) / float(3600)
+        delta = TimeDelta(sum([current.total_time for current in timers]))
+        return delta
 
     def time_formated(self):
-        from datetime import timedelta
-        delta = timedelta(hours = self.calculate_time())
-        return "%02d:%02d" % (delta.seconds // 3600, delta.seconds // 60 % 60)
+        delta = self.calculate_time()
+        return "%02d:%02d:%02d" % (delta.days, delta.hours, delta.minutes)
 
 
     def calculate_cost(self):
-        hours = self.calculate_time()
+        hours = self.calculate_time().hours
         if self.project:
             current_cost = int(hours * int(self.project.price_per_hour))
         else:
