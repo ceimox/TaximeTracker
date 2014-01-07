@@ -5,6 +5,25 @@ from core.models import start_task, stop_task, stop_fast_task, first_div
 from core.models import stop_second_div, second_div, start_second_div
 from core.models import search_existing_project
 import datetime
+from core.lib.time_delta import TimeDelta
+
+class TimeDeltaTest(TestCase):
+    def test_seconds_deberia_retornar_86400_cuando_se_pasan_86400_segundos_al_constructor(self):
+        delta = TimeDelta(86400)
+        self.assertEqual(delta.seconds, 86400)
+
+    def test_minutes_deberia_retornar_1400_cuando_se_pasan_86400_segundos_al_constructor(self):
+        delta = TimeDelta(86400)
+        self.assertEqual(delta.minutes, 1440)
+
+    def test_hours_deberia_retornar_24_cuando_se_pasan_86400_segundos_al_constructor(self):
+        delta = TimeDelta(86400)
+        self.assertEqual(delta.hours, 24)
+
+    def test_days_deberia_retornar_1_cuando_se_pasan_86400_segundos_al_constructor(self):
+        delta = TimeDelta(86400)
+        self.assertEqual(delta.days, 1)
+
 
 class StartTaskTest(TestCase):
 
