@@ -64,9 +64,9 @@
         {% csrf_token %}
 
         <tr>
-          <td><input name="taskName"type="text" class="form-control" {% if not last_task %}disabled {% endif %}></td>
+          <td><input name="taskName"type="text" class="form-control" {% if not last_task %}disabled {% endif %} required></td>
           <td><input name="taskDescription" type="text" class="form-control" {% if not last_task %}disabled {% endif %}></td>
-          <td><input name="newProjectName" type="text" class="form-control"  {% if not last_task %}disabled {% endif %}></td>
+          <td><input name="newProjectName" type="text" class="form-control"  {% if not last_task %}disabled {% endif %} required></td>
           <td>
             <input name="choisebuttom" type='submit' class="btn btn-sm btn-primary"
               {% if last_task %}value='Stop'

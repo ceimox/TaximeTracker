@@ -8,9 +8,9 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', home),
-    url(r'^projects', projects),
-    url(r'^yourtasks', yourtasks),
-    url(r'^fasttask', fast_task),
+    url(r'^projects/$', projects, name="projects"),
+    url(r'^yourtasks/$', yourtasks, name="yourtasks"),
+    url(r'^fasttask/$', fast_task, name="fasttask"),
     # url(r'^taxitimetracker/', include('taxitimetracker.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

@@ -69,6 +69,8 @@ class Task(models.Model):
             current_cost = 0
         return current_cost
 
+    
+
 class Timer(models.Model):
     initial_time = models.DateTimeField(null=True)
     final_time = models.DateTimeField(null=True)
@@ -87,22 +89,21 @@ def stop_task(task):
     task.started = False
     task.stop()
 
-def stop_fast_task(task, alldata):
+def fast_task_stopped(task, alldata):
     task.name = alldata.get("taskName")
     task.description = alldata.get("taskDescription")
     task.project = search_existing_project(alldata.get("newProjectName"))
     stop_task(task)
 
-def first_div(task, action):
+def choise_action_yourtasks(task, action):
     if action == "Start" and task.started == False:
         start_task(task)
     if action == "Stop" and task.started == True:
         stop_task(task)
 
-def start_second_div(user):
+def start_fast_task(user):
     task = Task.objects.create(user = user, name = "in_progress", started = True)
     task.start()
-    return task, ""
 
 def search_existing_project(name_project):
     if Project.objects.filter(name = name_project):
@@ -111,19 +112,22 @@ def search_existing_project(name_project):
         np = Project.objects.create(name = name_project, price_per_hour = 0)
         return np
 
-def stop_second_div(user, alldata):
+def stop_fast_task(user, alldata):
     task = Task.objects.get(user = user, name = "in_progress")
     if alldata["newProjectName"] and alldata["taskName"]:
-        stop_fast_task(task, alldata)
-        return None, ""
+        fast_task_stopped(task, alldata)
     else:
-        msg = "You have left a empty field"
         task.started = True
         task.save()
-        return task, msg
 
-def second_div(action, alldata, user):
+def choise_action_fast_task(action, alldata, user):
     if action == "Start":
-        return start_second_div(user)
+        start_fast_task(user)
     if action == "Stop":
-        return stop_second_div(user, alldata)
+        stop_fast_task(user, alldata)
+
+def search_task(request):
+    if Task.objects.filter(name = "in_progress",user = req.user):
+        return Task.objects.filter(name = "in_progress", user=req.user)
+    else:
+        return None

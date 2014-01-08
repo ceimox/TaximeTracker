@@ -2,8 +2,8 @@ from django.test import TestCase, RequestFactory
 from core.models import Project, Task, Timer
 from django.contrib.auth.models import User
 from views import home, projects, yourtasks, fast_task
-from core.models import start_task, stop_task, stop_fast_task, first_div
-from core.models import stop_second_div, second_div, start_second_div
+from core.models import start_task, stop_task, stop_fast_task, choise_action_yourtasks
+from core.models import stop_fast_task, choise_action_fast_task, start_fast_task
 from core.models import search_existing_project
 import datetime
 from core.lib.time_delta import TimeDelta
@@ -246,7 +246,7 @@ class TaskTest(TestCase):
         t1.current_timer.final_time = datetime.datetime(2013, 10, 31, 19, 56, 1, 0)
         t1.current_timer.save()
         result = t1.calculate_time()
-        self.assertEqual(result,2)
+        self.assertEqual(result.hours,2)
 
     def test_calcular_costo_para_obtener_el_valor_total_por_una_tarea_con_todos_sus_tiempos(self):
         user= User(username="cesar",password="1234")
