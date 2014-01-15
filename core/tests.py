@@ -34,7 +34,7 @@ class StartTaskTest(TestCase):
         t = Task(name="tarea1", user=user)
         t.save()
         start_task(t)
-        tasks_started = Task.objects.filter(started=True).count() 
+        tasks_started = Task.objects.filter(started=True).count()
         self.assertEqual(tasks_started,1)
         temporal_timer = t.current_timer
         self.assertEqual(temporal_timer, Timer.objects.all()[0])
@@ -49,7 +49,7 @@ class StopTaskTest(TestCase):
         t.save()
         start_task(t)
         stop_task(t)
-        tasks_stopped = Task.objects.filter(started=False).count() 
+        tasks_stopped = Task.objects.filter(started=False).count()
         self.assertEqual(tasks_stopped,1)
         temporal_timer = t.current_timer
         self.assertEqual(temporal_timer, None)
@@ -62,7 +62,7 @@ class ProjectTest(TestCase):
         factory = RequestFactory()
         request = factory.post("/projects")
         request.POST["projectname"] = "project1"
-        request.POST["projectcost"] = 2000 
+        request.POST["projectcost"] = 2000
         projects(request)
         projects_number = Project.objects.all().count()
         self.assertEqual(projects_number, 1)
@@ -85,8 +85,8 @@ class HomeTest(TestCase):
         self.assertEqual(projects_number, 1)
         self.assertEqual(tasks_number, 1)
 
-class YourtasksTest(TestCase):
 
+class YourtasksTest(TestCase):
 
     def test_al_hacer_post_para_inciar_una_tarea(self):
         user= User(username="cesar",password="1234")
@@ -101,7 +101,7 @@ class YourtasksTest(TestCase):
         request.POST["task_selected"] = t.id
         request.POST["choisebuttom"] = "Start"
         result = yourtasks(request)
-        tasks_started = Task.objects.filter(started=True).count() 
+        tasks_started = Task.objects.filter(started=True).count()
         self.assertEqual(tasks_started,1)
 
     def test_al_hacer_post_para_detener_una_tarea(self):
@@ -119,7 +119,7 @@ class YourtasksTest(TestCase):
         request.POST["task_selected"] = t.id
         request.POST["choisebuttom"] = "Stop"
         result = yourtasks(request)
-        tasks_stopped = Task.objects.filter(started=False).count() 
+        tasks_stopped = Task.objects.filter(started=False).count()
         self.assertEqual(tasks_stopped,1)
 
 class FastTaskTest(TestCase):
@@ -132,7 +132,7 @@ class FastTaskTest(TestCase):
         request.POST["choisebuttom"] = "Start"
         request.user = user
         result = fast_task(request)
-        tasks_started = Task.objects.filter(started=True).count() 
+        tasks_started = Task.objects.filter(started=True).count()
         self.assertEqual(tasks_started,1)
 
     def test_al_detener_tarea_con_ningun_campo_vacio_para_detener_tarea_y_crear_proyecto(self):
@@ -150,7 +150,7 @@ class FastTaskTest(TestCase):
         request.POST["newProjectName"] = "Project1"
         request.POST["choisebuttom"] = "Stop"
         result = fast_task(request)
-        tasks_stopped = Task.objects.filter(started=False).count() 
+        tasks_stopped = Task.objects.filter(started=False).count()
         projects_number = Project.objects.all().count()
         self.assertEqual(tasks_stopped+projects_number,2)
 
@@ -169,7 +169,7 @@ class FastTaskTest(TestCase):
         request.POST["newProjectName"] = "Project1"
         request.POST["choisebuttom"] = "Stop"
         result = fast_task(request)
-        tasks_stopped = Task.objects.filter(started=False).count() 
+        tasks_stopped = Task.objects.filter(started=False).count()
         projects_number = Project.objects.all().count()
         self.assertEqual(tasks_stopped+projects_number,0)
 
@@ -188,13 +188,13 @@ class FastTaskTest(TestCase):
         request.POST["newProjectName"] = ""
         request.POST["choisebuttom"] = "Stop"
         result = fast_task(request)
-        tasks_stopped = Task.objects.filter(started=False).count() 
+        tasks_stopped = Task.objects.filter(started=False).count()
         projects_number = Project.objects.all().count()
         self.assertEqual(tasks_stopped+projects_number,0)
 
 
 class TaskTest(TestCase):
-    
+
     def test_iniciar_una_tarea_para_crearle_un_cronometro_temporal_y_darle_su_tiempo_de_inicio(self):
         from datetime import timedelta
         user= User(username="cesar",password="1234")
@@ -226,7 +226,7 @@ class TaskTest(TestCase):
         timer_in_task = t1.current_timer
         self.assertEqual(timer_in_task,None)
         timers= t1.timer_set.all().count()
-        self.assertEqual(timers,1)        
+        self.assertEqual(timers,1)
 
     def test_calcular_tiempo_para_devolver_el_tiempo_total_de_una_tarea(self):
         from datetime import timedelta
@@ -268,3 +268,44 @@ class TaskTest(TestCase):
         t1.current_timer.save()
         result = t1.calculate_cost()
         self.assertEqual(result,8000)
+
+    def test_current_month_tasks_deberia_retortar_solo_las_tareas_que_tienen_timers_en_el_mes_actual(self):
+        from datetime import datetime, timedelta
+
+        user = User(username="cesar",password="1234")
+        user.save()
+
+        project=Project(name="test_project",price_per_hour=4000)
+        project.save()
+
+        last_month = datetime.today() - timedelta(days=32)
+
+        t1=Task(name="Task1",user=user,project=project)
+        t1.save()
+        t1.current_timer = Timer(task=t1)
+        t1.current_timer.save()
+
+        t1.current_timer.initial_time = last_month
+        t1.current_timer.final_time = last_month
+        t1.current_timer.save()
+
+        t2=Task(name="Task1",user=user,project=project)
+        t2.save()
+        t2.current_timer = Timer(task=t1)
+        t2.current_timer.save()
+
+        t2.current_timer.initial_time = last_month
+        t2.current_timer.final_time = datetime.today()
+        t2.current_timer.save()
+
+        t3=Task(name="Task1",user=user,project=project)
+        t3.save()
+        t3.current_timer = Timer(task=t1)
+        t3.current_timer.save()
+
+        t3.current_timer.initial_time = datetime.today()
+        t3.current_timer.final_time = datetime.today()
+        t3.current_timer.save()
+
+        result = Task.objects.current_month_tasks()
+        self.assertEqual(result, [t2, t3])

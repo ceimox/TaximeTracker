@@ -69,7 +69,6 @@ class Task(models.Model):
             current_cost = 0
         return current_cost
 
-    
 
 class Timer(models.Model):
     initial_time = models.DateTimeField(null=True)
