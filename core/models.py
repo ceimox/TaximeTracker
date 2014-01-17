@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from core.lib.time_delta import TimeDelta
 import datetime
 
-
 def calculate_total_cost(user) :
     tasks = user.task_set.all()
     total = sum([current.calculate_cost() for current in tasks])
@@ -28,12 +27,21 @@ class Project(models.Model):
 
       return total
 
+class TaskManager(models.Manager):
+    def current_month_tasks(self):
+      a = []
+      for current in self.all():
+        if list(current.timer_set.all())[-1].final_time.month == datetime.datetime.today().month:
+          a.append(current)
+      return a
+
 class Task(models.Model):
     name = models.CharField(max_length=200, null=True)
     description = models.TextField(max_length=200, null=True)
     user = models.ForeignKey(User)
     project = models.ForeignKey(Project, null=True)
     started = models.BooleanField()
+    objects = TaskManager()
 
     def __unicode__(self):
         return u'%s %s' % (self.name,self.description)
@@ -126,7 +134,7 @@ def choise_action_fast_task(action, alldata, user):
         stop_fast_task(user, alldata)
 
 def search_task(request):
-    if Task.objects.filter(name = "in_progress",user = req.user):
-        return Task.objects.filter(name = "in_progress", user=req.user)
+    if Task.objects.filter(name = "in_progress",user = request.user):
+        return Task.objects.filter(name = "in_progress", user=request.user)
     else:
         return None
