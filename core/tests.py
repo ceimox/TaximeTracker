@@ -289,18 +289,18 @@ class TaskTest(TestCase):
         t1.current_timer.final_time = last_month
         t1.current_timer.save()
 
-        t2=Task(name="Task1",user=user,project=project)
+        t2=Task(name="Task2",user=user,project=project)
         t2.save()
-        t2.current_timer = Timer(task=t1)
+        t2.current_timer = Timer(task=t2)
         t2.current_timer.save()
 
         t2.current_timer.initial_time = last_month
         t2.current_timer.final_time = datetime.today()
         t2.current_timer.save()
 
-        t3=Task(name="Task1",user=user,project=project)
+        t3=Task(name="Task3",user=user,project=project)
         t3.save()
-        t3.current_timer = Timer(task=t1)
+        t3.current_timer = Timer(task=t3)
         t3.current_timer.save()
 
         t3.current_timer.initial_time = datetime.today()

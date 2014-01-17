@@ -30,12 +30,6 @@ def projects(request):
         p.save()
     return render(request, 'projects.html')
 
-def search_task(request):
-    if Task.objects.filter(name = "in_progress",user = request.user):
-        return Task.objects.filter(name = "in_progress", user=request.user)
-    else:
-        return None
-
 def yourtasks(request):    
     last_task = search_task(request)
     if request.method == 'POST':
