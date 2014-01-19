@@ -8,6 +8,97 @@ from core.models import search_existing_project
 import datetime
 from core.lib.time_delta import TimeDelta
 
+class YourTaskTemplateTest(TestCase):
+
+    def test_al_hacer_get_en_yourtask_se_obtienen_dos_enlaces_de_tareas_actuales_y_antiguas(self):
+        factory = RequestFactory()
+        request = factory.get("/yourtasks")
+        result = yourtasks(request)
+        self.assertIn('<a href="yourtasks/current_month">Current month</a>',result.content)
+        self.assertIn('<a href="yourtasks/all_tasks">All Tasks</a>',result.content)
+        self.assertEqual(result.status_code,200)
+
+    def test_al_hacer_get_en_enlace_de_tareas_del_mes_actual_muestra_solo_esas_tareas(self):
+        user = User(username="cesar", password="1234")
+        user.save()
+
+        project=Project(name="test_project",price_per_hour=4000)
+        project.save()
+
+        t1 = Task(name="tarea1", user=user, project=project)
+        t1.save()
+        t1.start()
+        t1.stop()
+
+        other_month = datetime.datetime.now() - datetime.timedelta(days=32)
+
+        t2= Task(name="tarea2", user=user,project=project)
+        t2.save()
+        t2.current_timer = Timer(task=t2)
+        t2.current_timer.initial_time = other_month
+        t2.current_timer.save()
+        t2.save()
+        t2.stop()
+
+        t3=Task(name="tarea3",user=user,project=project)
+        t3.save()
+        t3.current_timer = Timer(task=t3)
+        t3.current_timer.initial_time = other_month
+        t3.current_timer.save()
+        t3.current_timer.final_time = other_month
+        t3.current_timer.save()
+
+        factory = RequestFactory()
+        request = factory.get("/yourtasks/current_month")
+        request.user = user
+        result = your_task_current_month(request)
+        self.assertIn(t1.name,result.content)
+        self.assertIn(t2.name,result.content)
+        self.assertNotIn(t3.name,result.content)
+        self.assertEqual(result.status_code,200)
+
+
+    def test_al_hacer_get_en_enlace_de_todas_las_tareas_muestra_esas_tareas(self):
+        user = User(username="cesar", password="1234")
+        user.save()
+
+        project=Project(name="test_project",price_per_hour=4000)
+        project.save()
+
+        t1 = Task(name="tarea1", user=user, project=project)
+        t1.save()
+        t1.start()
+        t1.stop()
+
+        other_month = datetime.datetime.now() - datetime.timedelta(days=32)
+
+        t2= Task(name="tarea2", user=user,project=project)
+        t2.save()
+        t2.current_timer = Timer(task=t2)
+        t2.current_timer.initial_time = other_month
+        t2.current_timer.save()
+        t2.save()
+        t2.stop()
+
+        t3=Task(name="tarea3",user=user,project=project)
+        t3.save()
+        t3.current_timer = Timer(task=t3)
+        t3.current_timer.initial_time = other_month
+        t3.current_timer.save()
+        t3.current_timer.final_time = other_month
+        t3.current_timer.save()
+
+        factory = RequestFactory()
+        request = factory.get("/yourtasks")
+        request.user = user
+        result = yourtasks(request)
+        self.assertIn(t1.name,result.content)
+        self.assertIn(t2.name,result.content)
+        self.assertIn(t3.name,result.content)
+        self.assertEqual(result.status_code,200)
+
+
+
 class TimeDeltaTest(TestCase):
     def test_seconds_deberia_retornar_86400_cuando_se_pasan_86400_segundos_al_constructor(self):
         delta = TimeDelta(86400)
