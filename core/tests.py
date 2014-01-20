@@ -89,7 +89,7 @@ class YourTaskTemplateTest(TestCase):
         t3.current_timer.save()
 
         factory = RequestFactory()
-        request = factory.get("/yourtasks")
+        request = factory.get("/yourtasks/")
         request.user = user
         result = yourtasks(request)
         self.assertIn(t1.name,result.content)
