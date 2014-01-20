@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 from core.models import Project, Task, Timer
 from django.contrib.auth.models import User
-from views import home, projects, yourtasks, fast_task
+from views import home, projects, yourtasks, fast_task, your_task_current_month
 from core.models import start_task, stop_task, stop_fast_task, choise_action_yourtasks
 from core.models import stop_fast_task, choise_action_fast_task, start_fast_task
 from core.models import search_existing_project
@@ -11,11 +11,14 @@ from core.lib.time_delta import TimeDelta
 class YourTaskTemplateTest(TestCase):
 
     def test_al_hacer_get_en_yourtask_se_obtienen_dos_enlaces_de_tareas_actuales_y_antiguas(self):
+        user = User(username="cesar", password="1234")
+        user.save()
         factory = RequestFactory()
         request = factory.get("/yourtasks")
+        request.user = user
         result = yourtasks(request)
-        self.assertIn('<a href="yourtasks/current_month">Current month</a>',result.content)
-        self.assertIn('<a href="yourtasks/all_tasks">All Tasks</a>',result.content)
+        self.assertIn('<a href="/yourtasks/current_month">Current month</a>',result.content)
+        self.assertIn('<a href="/yourtasks/all_tasks">All Tasks</a>',result.content)
         self.assertEqual(result.status_code,200)
 
     def test_al_hacer_get_en_enlace_de_tareas_del_mes_actual_muestra_solo_esas_tareas(self):

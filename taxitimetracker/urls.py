@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from core.views import fast_task, yourtasks, home, projects
+from core.views import fast_task, yourtasks, home, projects, your_task_current_month
 from django.core.mail import EmailMessage
 
 # Uncomment the next two lines to enable the admin:
@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     url(r'^$', home),
     url(r'^projects/$', projects, name="projects"),
     url(r'^yourtasks/$', yourtasks, name="yourtasks"),
+    url(r'^yourtasks/current_month/$', your_task_current_month, name="current_month_tasks"),
+    url(r'^yourtasks/all_tasks/$', yourtasks, name="all_tasks"),
     url(r'^fasttask/$', fast_task, name="fasttask"),
     # url(r'^taxitimetracker/', include('taxitimetracker.foo.urls')),
 

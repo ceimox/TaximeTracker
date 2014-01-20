@@ -30,17 +30,27 @@ def projects(request):
         p.save()
     return render(request, 'projects.html')
 
-def yourtasks(request):    
+def yourtasks(request):
     last_task = search_task(request)
     if request.method == 'POST':
-        alldata = request.POST           
+        alldata = request.POST
         choise_action_yourtasks(Task.objects.get(id = alldata.get("task_selected")), alldata.get("choisebuttom"))
-        return HttpResponseRedirect('/yourtasks') 
+        return HttpResponseRedirect('/yourtasks')
     tasks = request.user.task_set.all().order_by('project__name')
+    return render(request, 'yourtasks.html', {'tasks':tasks, 'last_task':last_task})
+
+
+def your_task_current_month(request):
+    last_task = search_task(request)
+    if request.method == 'POST':
+        alldata = request.POST
+        choise_action_yourtasks(Task.objects.get(id = alldata.get("task_selected")), alldata.get("choisebuttom"))
+        return HttpResponseRedirect('/yourtasks/current_month')
+    tasks = request.user.task_set.current_month_tasks()
     return render(request, 'yourtasks.html', {'tasks':tasks, 'last_task':last_task})
 
 
 def fast_task(request):
     if request.method == 'POST':
         tupla = choise_action_fast_task(request.POST.get("choisebuttom"),request.POST, request.user)
-        return HttpResponseRedirect('/yourtasks') 
+        return HttpResponseRedirect('/yourtasks')
