@@ -5,3 +5,4 @@ distribute==0.6.34
 django-registration==1.0
 psycopg2==2.5.1
 wsgiref==0.1.2
+selenium==2.39.0
