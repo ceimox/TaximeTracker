@@ -8,6 +8,38 @@ from core.models import search_existing_project
 import datetime
 from core.lib.time_delta import TimeDelta
 
+from django.test import LiveServerTestCase
+from selenium.webdriver.firefox.webdriver import WebDriver
+
+class MyWatTests(LiveServerTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.selenium = WebDriver()
+        super(MyWatTests, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.selenium.quit()
+        super(MyWatTests, cls).tearDownClass()
+
+    def test_algo(self):
+        user = User(username="cesar", password="1234")
+        user.save()
+
+        self.selenium.get('%s%s' % (self.live_server_url, '/accounts/login/'))
+
+        username_input = self.selenium.find_element_by_name("username")
+        username_input.send_keys('cesar')
+
+        password_input = self.selenium.find_element_by_name("password")
+        password_input.send_keys('1234')
+
+        self.selenium.find_element_by_xpath('//input[@value="Log in"]').click()
+
+        self.assertEqual(self.selenium.current_url, '/')
+
+
 class YourTaskTemplateTest(TestCase):
 
     def test_al_hacer_get_en_yourtask_se_obtienen_dos_enlaces_de_tareas_actuales_y_antiguas(self):
