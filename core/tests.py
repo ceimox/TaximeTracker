@@ -24,8 +24,7 @@ class MyWatTests(LiveServerTestCase):
         super(MyWatTests, cls).tearDownClass()
 
     def test_algo(self):
-        user = User(username="cesar", password="1234")
-        user.save()
+        User.objects.create_user(username="cesar", password="1234")
 
         self.selenium.get('%s%s' % (self.live_server_url, '/accounts/login/'))
 
@@ -37,7 +36,7 @@ class MyWatTests(LiveServerTestCase):
 
         self.selenium.find_element_by_xpath('//input[@value="Log in"]').click()
 
-        self.assertEqual(self.selenium.current_url, '/')
+        self.assertEqual(self.selenium.current_url, '%s%s' % (self.live_server_url, '/'))
 
 
 class YourTaskTemplateTest(TestCase):
@@ -124,7 +123,7 @@ class YourTaskTemplateTest(TestCase):
         t3.current_timer.save()
 
         factory = RequestFactory()
-        request = factory.get("/yourtasks")
+        request = factory.get("/yourtasks/")
         request.user = user
         result = yourtasks(request)
         self.assertIn(t1.name,result.content)
