@@ -42,19 +42,19 @@ class MyWatTests(LiveServerTestCase):
 class YourTaskTemplateTest(TestCase):
 
     def test_al_hacer_get_en_yourtask_se_obtienen_dos_enlaces_de_tareas_actuales_y_antiguas(self):
-        user = User(username="cesar", password="1234")
-        user.save()
+        user = User.objects.create(username="cesar", password="1234")
+
         factory = RequestFactory()
         request = factory.get("/yourtasks")
         request.user = user
         result = yourtasks(request)
+
         self.assertIn('<a href="/yourtasks/current_month">Current month</a>',result.content)
         self.assertIn('<a href="/yourtasks/all_tasks">All Tasks</a>',result.content)
         self.assertEqual(result.status_code,200)
 
     def test_al_hacer_get_en_enlace_de_tareas_del_mes_actual_muestra_solo_esas_tareas(self):
-        user = User(username="cesar", password="1234")
-        user.save()
+        user = User.objects.create(username="cesar", password="1234")
 
         project=Project(name="test_project",price_per_hour=4000)
         project.save()
@@ -93,8 +93,8 @@ class YourTaskTemplateTest(TestCase):
 
 
     def test_al_hacer_get_en_enlace_de_todas_las_tareas_muestra_esas_tareas(self):
-        user = User(username="cesar", password="1234")
-        user.save()
+
+        user = User.objects.create(username="cesar", password="1234")
 
         project=Project(name="test_project",price_per_hour=4000)
         project.save()
@@ -154,8 +154,8 @@ class TimeDeltaTest(TestCase):
 class StartTaskTest(TestCase):
 
     def test_iniciar_tarea_para_cambiarle_el_estado_y_asignarle_un_timer(self):
-        user = User(username="cesar", password="1234")
-        user.save()
+
+        user = User.objects.create(username="cesar", password="1234")
         t = Task(name="tarea1", user=user)
         t.save()
         start_task(t)
@@ -168,8 +168,7 @@ class StartTaskTest(TestCase):
 
 class StopTaskTest(TestCase):
     def test_detener_tarea_para_cambiarle_el_estado_y_liberar_su_timer_temporal(self):
-        user = User(username="cesar", password="1234")
-        user.save()
+        user = User.objects.create(username="cesar", password="1234")
         t = Task(name="tarea1", user=user)
         t.save()
         start_task(t)
@@ -195,8 +194,7 @@ class ProjectTest(TestCase):
 class HomeTest(TestCase):
 
     def test_al_hacer_post_se_crea_una_tarea(self):
-        user= User(username="cesar",password="1234")
-        user.save()
+        user = User.objects.create(username="cesar", password="1234")
         p=Project(name="testProject",price_per_hour=4000)
         p.save()
         factory = RequestFactory()
@@ -214,8 +212,7 @@ class HomeTest(TestCase):
 class YourtasksTest(TestCase):
 
     def test_al_hacer_post_para_inciar_una_tarea(self):
-        user= User(username="cesar",password="1234")
-        user.save()
+        user= User.objects.create(username="cesar",password="1234")
         factory = RequestFactory()
         request = factory.post("/yourtasks")
         p = Project(name="testProject",price_per_hour=4000)
@@ -230,8 +227,7 @@ class YourtasksTest(TestCase):
         self.assertEqual(tasks_started,1)
 
     def test_al_hacer_post_para_detener_una_tarea(self):
-        user= User(username="cesar",password="1234")
-        user.save()
+        user= User.objects.create(username="cesar",password="1234")
         factory = RequestFactory()
         request = factory.post("/yourtasks")
         p = Project(name="testProject",price_per_hour=4000)
@@ -250,8 +246,7 @@ class YourtasksTest(TestCase):
 class FastTaskTest(TestCase):
 
     def test_al_iniciar_tarea_para_iniciar_una_tarea(self):
-        user= User(username="cesar",password="1234")
-        user.save()
+        user= User.objects.create(username="cesar",password="1234")
         factory = RequestFactory()
         request = factory.post("/fasttask")
         request.POST["choisebuttom"] = "Start"
@@ -261,8 +256,7 @@ class FastTaskTest(TestCase):
         self.assertEqual(tasks_started,1)
 
     def test_al_detener_tarea_con_ningun_campo_vacio_para_detener_tarea_y_crear_proyecto(self):
-        user= User(username="cesar",password="1234")
-        user.save()
+        user= User.objects.create(username="cesar",password="1234")
         tk=Task(user=user,name="in_progress")
         tk.save()
         tk.started=True
@@ -280,8 +274,7 @@ class FastTaskTest(TestCase):
         self.assertEqual(tasks_stopped+projects_number,2)
 
     def test_al_detener_tarea_con_campo_de_tarea_vacio_para_no_detener_tarea_ni_crear_proyecto(self):
-        user= User(username="cesar",password="1234")
-        user.save()
+        user= User.objects.create(username="cesar",password="1234")
         tk=Task(user=user,name="in_progress")
         tk.save()
         tk.started=True
@@ -299,8 +292,7 @@ class FastTaskTest(TestCase):
         self.assertEqual(tasks_stopped+projects_number,0)
 
     def test_al_detener_tarea_con_campo_de_proyecto_vacio_para_no_detener_tarea_ni_crear_proyecto(self):
-        user= User(username="cesar",password="1234")
-        user.save()
+        user= User.objects.create(username="cesar",password="1234")
         tk=Task(user=user,name="in_progress")
         tk.save()
         tk.started=True
@@ -322,8 +314,7 @@ class TaskTest(TestCase):
 
     def test_iniciar_una_tarea_para_crearle_un_cronometro_temporal_y_darle_su_tiempo_de_inicio(self):
         from datetime import timedelta
-        user= User(username="cesar",password="1234")
-        user.save()
+        user= User.objects.create(username="cesar",password="1234")
         t1=Task(name="Task1",user=user)
         t1.save()
         t1.current_timer = Timer(task=t1)
@@ -337,8 +328,7 @@ class TaskTest(TestCase):
 
     def test_pausar_una_tarea_para_desvicularle_el_cronometro_temporal_y_asignarle_tiempo_final(self):
         from datetime import timedelta
-        user= User(username="cesar",password="1234")
-        user.save()
+        user= User.objects.create(username="cesar",password="1234")
         t1=Task(name="Task1",user=user)
         t1.save()
         t1.current_timer = Timer(task=t1)
@@ -355,8 +345,7 @@ class TaskTest(TestCase):
 
     def test_calcular_tiempo_para_devolver_el_tiempo_total_de_una_tarea(self):
         from datetime import timedelta
-        user= User(username="cesar",password="1234")
-        user.save()
+        user= User.objects.create(username="cesar",password="1234")
         t1=Task(name="Task1",user=user)
         t1.save()
         t1.current_timer = Timer(task=t1)
@@ -374,8 +363,7 @@ class TaskTest(TestCase):
         self.assertEqual(result.hours,2)
 
     def test_calcular_costo_para_obtener_el_valor_total_por_una_tarea_con_todos_sus_tiempos(self):
-        user= User(username="cesar",password="1234")
-        user.save()
+        user= User.objects.create(username="cesar",password="1234")
         project=Project(name="test_project",price_per_hour=4000)
         project.save()
         t1=Task(name="Task1",user=user,project=project)
@@ -397,8 +385,7 @@ class TaskTest(TestCase):
     def test_current_month_tasks_deberia_retortar_solo_las_tareas_que_tienen_timers_en_el_mes_actual(self):
         from datetime import datetime, timedelta
 
-        user = User(username="cesar",password="1234")
-        user.save()
+        user = User.objects.create(username="cesar",password="1234")
 
         project=Project(name="test_project",price_per_hour=4000)
         project.save()
