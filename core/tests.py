@@ -11,19 +11,19 @@ from core.lib.time_delta import TimeDelta
 from django.test import LiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
 
-class MyWatTests(LiveServerTestCase):
+class UserValidationTests(LiveServerTestCase):
 
     @classmethod
     def setUpClass(cls):
         cls.selenium = WebDriver()
-        super(MyWatTests, cls).setUpClass()
+        super(UserValidationTests, cls).setUpClass()
 
     @classmethod
     def tearDownClass(cls):
         cls.selenium.quit()
-        super(MyWatTests, cls).tearDownClass()
+        super(UserValidationTests, cls).tearDownClass()
 
-    def test_algo(self):
+    def test_user_with_valid_credentials_should_be_able_to_login(self):
         User.objects.create_user(username="cesar", password="1234")
 
         self.selenium.get('%s%s' % (self.live_server_url, '/accounts/login/'))
@@ -37,6 +37,10 @@ class MyWatTests(LiveServerTestCase):
         self.selenium.find_element_by_xpath('//input[@value="Log in"]').click()
 
         self.assertEqual(self.selenium.current_url, '%s%s' % (self.live_server_url, '/'))
+
+    def test_when_an_anonymous_user_visits_yourtasks_he_should_be_redirected_to_login_page(self):
+        self.selenium.get('%s%s' % (self.live_server_url, '/yourtasks/'))
+        self.assertEqual(self.selenium.current_url, '%s%s' % (self.live_server_url, '/accounts/login/'))
 
 
 class YourTaskTemplateTest(TestCase):
