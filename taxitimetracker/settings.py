@@ -100,7 +100,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.views.AuthenticationMiddleware',
 )
 
 ROOT_URLCONF = 'taxitimetracker.urls'
@@ -134,8 +135,8 @@ INSTALLED_APPS = (
 ACCOUNT_ACTIVATION_DAYS=7
 EMAIL_HOST='smtp.gmail.com'
 EMAIL_PORT=587
-EMAIL_HOST_USER = 'ceimox19@gmail.com'
-EMAIL_HOST_PASSWORD = 'moiso1234'
+EMAIL_HOST_USER = 'taximetracker@gmail.com'
+EMAIL_HOST_PASSWORD = 'taximetracker1234'
 EMAIL_USE_TLS = True
 
 

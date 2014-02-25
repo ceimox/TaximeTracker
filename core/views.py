@@ -7,21 +7,24 @@ from core.models import start_task, stop_task, stop_fast_task, choise_action_you
 from core.models import stop_fast_task, choise_action_fast_task, start_fast_task
 from core.models import search_existing_project, search_task
 
-
 def home(request):
-    c = request.user
-    pr = Project.objects.all()
+    return content_home(request)
+
+def content_home(request):
     if request.method == 'POST':
         alldata = request.POST
         taskname = alldata.get("taskname")
         taskdescription = alldata.get("taskdescription")
         projectname = alldata.get("projectname")
         p = Project.objects.get(name = projectname)
-        t = Task(name = taskname, description = taskdescription, user = c, project = p)
+        t = Task(name = taskname, description = taskdescription, user = request.user, project = p)
         t.save()
-    return render(request, 'home.html', {'projects':pr, 'user':c})
+    return render(request, 'home.html', {'projects':Project.objects.all(), 'user':request.user})
 
 def projects(request):
+    return content_projects(request)
+
+def content_projects(request):
     if request.method == 'POST':
         alldata=request.POST
         projectname = alldata.get("projectname")
@@ -31,6 +34,9 @@ def projects(request):
     return render(request, 'projects.html')
 
 def yourtasks(request):
+    return content_yourtasks(request)
+
+def content_yourtasks(request):
     last_task = search_task(request)
     if request.method == 'POST':
         alldata = request.POST
@@ -40,7 +46,10 @@ def yourtasks(request):
     return render(request, 'yourtasks.html', {'tasks':tasks, 'last_task':last_task})
 
 
-def your_task_current_month(request):
+def yourtasks_current_month(request):
+    return content_yourtasks_current_month(request)
+
+def content_yourtasks_current_month(request):
     last_task = search_task(request)
     if request.method == 'POST':
         alldata = request.POST
@@ -51,6 +60,15 @@ def your_task_current_month(request):
 
 
 def fast_task(request):
+    return content_fast_task(request)
+
+def content_fast_task(request):
     if request.method == 'POST':
-        tupla = choise_action_fast_task(request.POST.get("choisebuttom"),request.POST, request.user)
+        choise_action_fast_task(request.POST.get("choisebuttom"),request.POST, request.user)
         return HttpResponseRedirect('/yourtasks')
+
+class AuthenticationMiddleware(object):
+    def process_request(self, request):
+        if not '/accounts/' in request.get_full_path() and request.user.is_anonymous():
+            return HttpResponseRedirect('/accounts/login/')
+        return None

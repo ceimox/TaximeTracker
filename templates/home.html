@@ -35,7 +35,7 @@
 
 <form  role="form" method='POST' action='' enctype="multipart/form-data">
 
-	 <div class="form-group">
+   <div class="form-group">
     <label for="inputName"class="col-lg-2 control-label">Task Name:</label>
     <div class="col-lg-10">
     <input name="taskname" type="text" class="form-control" id="inputName" placeholder="Task Description">
@@ -60,8 +60,8 @@
     </div>
   </div>
 
-	<input type='submit' class="btn btn-lg btn-primary" value='Create Task'>
-	{% csrf_token %}
+  <input type='submit' class="btn btn-lg btn-primary" value='Create Task'>
+  {% csrf_token %}
 </form >
 <form role="form" method='GET' action='/accounts/logout' enctype="multipart/form-data">
   <input type='submit' class="btn  btn-danger" value='Log out'>
