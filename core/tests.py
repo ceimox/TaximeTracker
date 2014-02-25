@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 from core.models import Project, Task, Timer
 from django.contrib.auth.models import User
-from views import home, projects, yourtasks, fast_task, your_task_current_month
+from views import home, projects, yourtasks, fast_task, yourtasks_current_month
 from core.models import start_task, stop_task, stop_fast_task, choise_action_yourtasks
 from core.models import stop_fast_task, choise_action_fast_task, start_fast_task
 from core.models import search_existing_project
@@ -89,7 +89,7 @@ class YourTaskTemplateTest(TestCase):
         factory = RequestFactory()
         request = factory.get("/yourtasks/current_month")
         request.user = user
-        result = your_task_current_month(request)
+        result = yourtasks_current_month(request)
         self.assertIn(t1.name,result.content)
         self.assertIn(t2.name,result.content)
         self.assertNotIn(t3.name,result.content)
@@ -187,10 +187,12 @@ class StopTaskTest(TestCase):
 class ProjectTest(TestCase):
 
     def test_al_hacer_post_se_crea_un_proyecto(self):
+        user = User.objects.create(username="cesar", password="1234")
         factory = RequestFactory()
         request = factory.post("/projects")
         request.POST["projectname"] = "project1"
         request.POST["projectcost"] = 2000
+        request.user = user
         projects(request)
         projects_number = Project.objects.all().count()
         self.assertEqual(projects_number, 1)
