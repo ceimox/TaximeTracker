@@ -10,15 +10,22 @@ from core.models import search_existing_project, search_task
 def home(request):
     return content_home(request)
 
+def create_task(request, project):
+    task_name = request.POST.get("taskname")
+    task_description = request.POST.get("taskdescription")
+    t = Task(name=task_name, description=task_description, user=request.user, project=project)
+    t.save()
+
+def create_project(request):
+    project_name = request.POST.get("projectname")
+    project_cost = request.POST.get("projectcost")
+    p = Project(name=project_name, price_per_hour=project_cost)
+    p.save()
+
 def content_home(request):
     if request.method == 'POST':
-        alldata = request.POST
-        taskname = alldata.get("taskname")
-        taskdescription = alldata.get("taskdescription")
-        projectname = alldata.get("projectname")
-        p = Project.objects.get(name = projectname)
-        t = Task(name = taskname, description = taskdescription, user = request.user, project = p)
-        t.save()
+        p = Project.objects.get(name = request.POST.get("projectname"))
+        create_task(request,p)
     return render(request, 'home.html', {'projects':Project.objects.all(), 'user':request.user})
 
 def projects(request):
@@ -26,11 +33,7 @@ def projects(request):
 
 def content_projects(request):
     if request.method == 'POST':
-        alldata=request.POST
-        projectname = alldata.get("projectname")
-        projectcost = alldata.get("projectcost")
-        p=Project(name = projectname, price_per_hour = projectcost)
-        p.save()
+        create_project(request)
     return render(request, 'projects.html')
 
 def yourtasks(request):
