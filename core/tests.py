@@ -2,6 +2,7 @@ from django.test import TestCase, RequestFactory
 from core.models import Project, Task, Timer
 from django.contrib.auth.models import User
 from views import home, projects, yourtasks, fast_task, yourtasks_current_month
+from views import create_task, create_project
 from core.models import start_task, stop_task, stop_fast_task, choise_action_yourtasks
 from core.models import stop_fast_task, choise_action_fast_task, start_fast_task
 from core.models import search_existing_project
@@ -427,3 +428,54 @@ class TaskTest(TestCase):
 
         result = Task.objects.current_month_tasks()
         self.assertEqual(result, [t2, t3])
+
+    def test_create_task_debe_crear_una_tarea_con_todos_sus_elementos_a_partir_de_datos_validos(self):
+        user = User.objects.create(username="cesar",password="1234")
+        project = Project(name="test_project",price_per_hour=4000)
+        project.save()
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        request.user = user
+        request.POST["taskname"] = "TestTask"
+        request.POST["taskdescription"] = "TestDescription"
+        result = create_task(request, project)
+
+    def test_create_project_debe_crear_un_proyecto_con_todos_sus_elementos_a_partir_de_datos_validos(self):
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        request.POST["projectname"] = "TestProject"
+        request.POST["projectcost"] = 8000
+        result = create_project(request)
+        projects = Project.objects.all().count()
+        self.assertEqual(projects, 1)
+
+    def test_create_task_no_debe_crear_tarea_si_no_hay_un_usuario_predefinido(self):
+        project = Project(name="test_project",price_per_hour=4000)
+        project.save()
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        request.POST["taskname"] = ""
+        request.POST["taskdescription"] = "TestTask"
+        self.assertRaises(AttributeError,create_task, request, project)
+        tasks = Task.objects.all().count()
+        self.assertEqual(tasks, 0)
+
+    def test_create_task_debe_crear_una_tarea_aunque_esten_todos_sus_campos_vacios_menos_el_usuario(self):
+        user = User.objects.create(username="cesar",password="1234")
+        project = Project(name="test_project",price_per_hour=4000)
+        project.save()
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        request.user = user
+        result = create_task(request, project)
+        tasks = Task.objects.all().count()
+        self.assertEqual(tasks, 1)
+
+    def test_create_project_no_debe_crear_un_proyecto_si_no_se_ingresa_un_precio_valido_del_mismo(self):
+        factory = RequestFactory()
+        request = factory.post("/yourtasks")
+        request.POST["projectname"] = "TestProject"
+        request.POST["projectcost"] = ""
+        self.assertRaises(ValueError,create_project, request)
+        projects = Project.objects.all().count()
+        self.assertEqual(projects, 0)
